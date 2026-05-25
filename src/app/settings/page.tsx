@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   Shield, Lock, Bell, Eye, UserX, ShieldCheck, Smartphone,
-  ChevronRight, CheckCircle, Camera, FileText,
+  ChevronRight, CheckCircle, Camera, FileText, Plus, Trash2, AlertTriangle, ShieldAlert,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { useVelvetStore } from "@/store/useVelvetStore";
