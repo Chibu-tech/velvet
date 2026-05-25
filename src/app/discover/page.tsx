@@ -3,18 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Compass,
-  Map,
-  Grid,
-  SlidersHorizontal,
-  Heart,
-  X,
-  Sparkles,
-  CheckCircle,
-  MessageSquare,
-  Star,
-  MapPin,
-  ShieldCheck,
+  Compass, Map, Grid, SlidersHorizontal, Heart, X, Sparkles,
+  CheckCircle, MessageSquare, Star, MapPin, ShieldCheck,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVelvetStore } from "@/store/useVelvetStore";
@@ -45,73 +35,36 @@ export default function Discover() {
   });
 
   const handleSwipeLeft = () => {
-    if (swipeIndex < companions.length - 1) {
-      setSwipeIndex((prev) => prev + 1);
-    } else {
-      setSwipeIndex(0);
-    }
+    setSwipeIndex(prev => prev < companions.length - 1 ? prev + 1 : 0);
   };
-
   const handleSwipeRight = () => {
-    if (activeHost && (activeHost.isVerified || Math.random() > 0.3)) {
-      setMatchUser(activeHost);
-    }
-    if (swipeIndex < companions.length - 1) {
-      setSwipeIndex((prev) => prev + 1);
-    } else {
-      setSwipeIndex(0);
-    }
+    if (activeHost && (activeHost.isVerified || Math.random() > 0.3)) setMatchUser(activeHost);
+    setSwipeIndex(prev => prev < companions.length - 1 ? prev + 1 : 0);
   };
 
-  const { x, y, rotate, opacity, swipeDirection, handleDrag, handleDragEnd } = useSwipe(
-    handleSwipeLeft,
-    handleSwipeRight
-  );
+  const { x, y, rotate, swipeDirection, handleDrag, handleDragEnd } = useSwipe(handleSwipeLeft, handleSwipeRight);
 
   return (
-    <div className="flex-1 flex flex-col p-4 md:p-8 bg-velvet-black min-h-[calc(100vh-4rem)] relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] bg-white/[0.02] rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-velvet-gold/[0.02] rounded-full blur-[90px] pointer-events-none" />
-
-      <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 z-10">
+    <div className="flex-1 flex flex-col p-5 md:p-8 bg-[#0E0E12] min-h-[calc(100vh-4rem)] relative overflow-hidden">
+      <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 z-10">
         <div>
-          <h1 className="text-2xl font-display font-bold text-white flex items-center gap-2">
-            Discover
-            <span className="text-xs bg-white/5 text-white/40 border border-white/10 px-2 py-0.5 rounded-full font-semibold">
-              {filteredCompanions.length} nearby
-            </span>
-          </h1>
-          <p className="text-xs text-white/40 mt-1">Verified members for premium social experiences.</p>
+          <h1 className="text-2xl font-display font-medium text-[#F0EDE6]">Discover</h1>
+          <p className="text-[10px] text-[#7A7870] mt-1 uppercase tracking-[0.12em]">{filteredCompanions.length} members nearby</p>
         </div>
-
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`p-3.5 rounded-xl border transition-all ${
-              showFilters ? "bg-white/10 border-white/20 text-white" : "bg-white/5 border-white/5 text-white/40 hover:text-white"
-            }`}
-          >
-            <SlidersHorizontal size={16} />
+          <button onClick={() => setShowFilters(!showFilters)}
+            className={`p-3.5 rounded-[100px] border transition-all ${showFilters ? "bg-[#22222E] border-[#C9A84C] text-[#C9A84C]" : "border-white/[0.07] bg-transparent text-[#7A7870] hover:text-[#F0EDE6]"}`}>
+            <SlidersHorizontal size={16} strokeWidth={1.5} />
           </button>
-
-          <div className="flex bg-white/5 border border-white/5 p-1 rounded-xl w-full sm:w-auto">
+          <div className="flex bg-[#1A1A22] border border-white/[0.07] p-1 rounded-[100px] w-full sm:w-auto">
             {(["swipe", "grid", "map"] as const).map((mode) => (
-              <button
-                key={mode}
-                onClick={() => setViewMode(mode)}
-                className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                  viewMode === mode
-                    ? "bg-white/10 text-white"
-                    : "text-white/40 hover:text-white"
-                }`}
-              >
-                {mode === "swipe" ? (
-                  <><Compass size={13} /><span>Swipe</span></>
-                ) : mode === "grid" ? (
-                  <><Grid size={13} /><span>Grid</span></>
-                ) : (
-                  <><Map size={13} /><span>Map</span></>
-                )}
+              <button key={mode} onClick={() => setViewMode(mode)}
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium flex items-center justify-center gap-1.5 transition-all ${
+                  viewMode === mode ? "bg-[#C9A84C] text-[#0E0E12]" : "text-[#7A7870] hover:text-[#F0EDE6]"
+                }`}>
+                {mode === "swipe" ? <><Compass size={13} strokeWidth={1.5} /><span>Swipe</span></>
+                  : mode === "grid" ? <><Grid size={13} strokeWidth={1.5} /><span>Grid</span></>
+                  : <><Map size={13} strokeWidth={1.5} /><span>Map</span></>}
               </button>
             ))}
           </div>
@@ -120,66 +73,35 @@ export default function Discover() {
 
       <AnimatePresence>
         {showFilters && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="w-full z-20 mb-6"
-          >
-            <GlassCard className="p-6 border border-white/5 grid grid-cols-1 md:grid-cols-4 gap-6">
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+            className="w-full z-20 mb-8">
+            <GlassCard className="p-5 grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="flex flex-col gap-2">
-                <div className="flex justify-between text-xs font-semibold text-white/40 uppercase tracking-wide">
-                  <span>Distance</span>
-                  <span className="text-velvet-gold">{radius} km</span>
+                <div className="flex justify-between text-[10px] font-medium text-[#7A7870] uppercase tracking-[0.12em]">
+                  <span>Distance</span><span className="text-[#C9A84C]">{radius} km</span>
                 </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="100"
-                  value={radius}
-                  onChange={(e) => setRadius(parseInt(e.target.value))}
-                  className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
-                />
+                <input type="range" min="5" max="100" value={radius} onChange={(e) => setRadius(parseInt(e.target.value))}
+                  className="w-full h-1.5 bg-white/[0.07] rounded-lg appearance-none cursor-pointer" />
               </div>
-
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="online-chk"
-                  checked={onlineOnly}
-                  onChange={(e) => setOnlineOnly(e.target.checked)}
-                  className="w-4 h-4 rounded border-white/10 bg-white/5 cursor-pointer accent-velvet-gold"
-                />
-                <label htmlFor="online-chk" className="text-sm font-semibold text-white/60 cursor-pointer select-none">
-                  Online Now
-                </label>
+                <input type="checkbox" id="online-chk" checked={onlineOnly} onChange={(e) => setOnlineOnly(e.target.checked)}
+                  className="w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#C9A84C]" />
+                <label htmlFor="online-chk" className="text-sm text-[#7A7870] cursor-pointer select-none">Online Now</label>
               </div>
-
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="verified-chk"
-                  checked={verifiedOnly}
-                  onChange={(e) => setVerifiedOnly(e.target.checked)}
-                  className="w-4 h-4 rounded border-white/10 bg-white/5 cursor-pointer accent-velvet-gold"
-                />
-                <label htmlFor="verified-chk" className="text-sm font-semibold text-white/60 cursor-pointer select-none">
-                  Verified Only
-                </label>
+                <input type="checkbox" id="verified-chk" checked={verifiedOnly} onChange={(e) => setVerifiedOnly(e.target.checked)}
+                  className="w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#C9A84C]" />
+                <label htmlFor="verified-chk" className="text-sm text-[#7A7870] cursor-pointer select-none">Verified Only</label>
               </div>
-
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-white/40 uppercase tracking-wide">Category</label>
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-sm focus:border-velvet-gold/40 focus:outline-none"
-                >
-                  <option value="All" className="bg-velvet-black">All</option>
-                  <option value="Nightlife Hosting" className="bg-velvet-black">Nightlife</option>
-                  <option value="Social Meetups" className="bg-velvet-black">Social Meetups</option>
-                  <option value="Creator Bookings" className="bg-velvet-black">Creator Bookings</option>
-                  <option value="Corporate Networking" className="bg-velvet-black">Corporate</option>
+                <label className="text-[10px] font-medium text-[#7A7870] uppercase tracking-[0.12em]">Category</label>
+                <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="bg-[#22222E] border border-white/[0.1] text-[#F0EDE6] rounded-[12px] px-3 py-2 text-sm focus:border-[#C9A84C] focus:outline-none">
+                  <option value="All" className="bg-[#0E0E12]">All</option>
+                  <option value="Nightlife Hosting" className="bg-[#0E0E12]">Nightlife</option>
+                  <option value="Social Meetups" className="bg-[#0E0E12]">Social Meetups</option>
+                  <option value="Creator Bookings" className="bg-[#0E0E12]">Creator Bookings</option>
+                  <option value="Corporate Networking" className="bg-[#0E0E12]">Corporate</option>
                 </select>
               </div>
             </GlassCard>
@@ -192,119 +114,90 @@ export default function Discover() {
           <div className="swipe-card-container">
             <AnimatePresence mode="popLayout">
               {activeHost ? (
-                <motion.div
-                  key={activeHost.id}
-                  style={{ x, y, rotate, opacity }}
-                  drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                  onDrag={handleDrag}
-                  onDragEnd={handleDragEnd}
-                  className="absolute w-full h-[580px] bg-velvet-charcoal border border-white/10 rounded-[30px] overflow-hidden cursor-grab active:cursor-grabbing shadow-[0_15px_40px_rgba(0,0,0,0.4)] flex flex-col group"
-                >
+                <motion.div key={activeHost.id} style={{ x, y, rotate }}
+                  drag dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  onDrag={handleDrag} onDragEnd={handleDragEnd}
+                  className="absolute w-full h-[580px] bg-[#1A1A22] border border-white/[0.07] rounded-[18px] overflow-hidden cursor-grab active:cursor-grabbing flex flex-col group">
                   <div className="relative w-full flex-1">
-                    <img
-                      src={activeHost.avatarUrl}
-                      alt={activeHost.displayName}
-                      className="w-full h-full object-cover pointer-events-none select-none"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-velvet-charcoal via-transparent to-black/20 pointer-events-none" />
-
+                    <img src={activeHost.avatarUrl} alt={activeHost.displayName} className="w-full h-full object-cover pointer-events-none select-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgba(14,14,18,0.7)] to-transparent pointer-events-none" />
                     <div className="absolute top-5 left-5 flex gap-2">
-                      <span className="px-3 py-1 rounded-full bg-black/50 backdrop-blur-md text-[10px] font-semibold tracking-wider text-white/60 border border-white/10 flex items-center gap-1">
-                        <MapPin size={10} />
-                        <span>{activeHost.distanceKm} km</span>
+                      <span className="px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] font-medium tracking-[0.12em] uppercase text-[#7A7870] border border-[rgba(201,168,76,0.3)] flex items-center gap-1">
+                        <MapPin size={10} strokeWidth={1.5} />{activeHost.distanceKm} km
                       </span>
                       {activeHost.isVerified && (
-                        <span className="px-2 py-1 rounded-full bg-velvet-gold/10 backdrop-blur-md text-[10px] font-semibold text-velvet-gold border border-velvet-gold/20 flex items-center gap-1">
-                          <ShieldCheck size={10} />
-                          <span>Verified</span>
+                        <span className="px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] font-medium tracking-[0.12em] uppercase text-[#C9A84C] border border-[rgba(201,168,76,0.3)] flex items-center gap-1">
+                          <ShieldCheck size={10} strokeWidth={1.5} />Verified
                         </span>
                       )}
                     </div>
-
                     <div className="absolute top-5 right-5">
-                      <span className="px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md text-xs font-bold text-white border border-white/10">
+                      <span className="px-3.5 py-1.5 bg-[#1A1A22] rounded-[100px] text-xs font-medium text-[#F0EDE6] border border-white/[0.07]">
                         ${activeHost.pricingHourly}/hr
                       </span>
                     </div>
-
                     {swipeDirection === "right" && (
-                      <div className="absolute top-1/2 left-10 -translate-y-1/2 border-4 border-white/30 text-white font-display font-black text-4xl uppercase px-4 py-2 rounded-xl rotate-[-15deg] tracking-widest bg-black/60">
-                        CONNECT
+                      <div className="absolute top-1/2 left-10 -translate-y-1/2 border-2 border-[#C9A84C] text-[#C9A84C] font-display font-medium text-4xl uppercase px-4 py-2 rounded-[18px] rotate-[-15deg] tracking-widest bg-[#0E0E12]/80">
+                        Connect
                       </div>
                     )}
                     {swipeDirection === "left" && (
-                      <div className="absolute top-1/2 right-10 -translate-y-1/2 border-4 border-white/10 text-white/40 font-display font-black text-4xl uppercase px-4 py-2 rounded-xl rotate-[15deg] tracking-widest bg-black/60">
-                        SKIP
+                      <div className="absolute top-1/2 right-10 -translate-y-1/2 border-2 border-white/10 text-white/40 font-display font-medium text-4xl uppercase px-4 py-2 rounded-[18px] rotate-[15deg] tracking-widest bg-[#0E0E12]/80">
+                        Skip
                       </div>
                     )}
                   </div>
-
-                  <div className="p-6 flex flex-col gap-3">
+                  <div className="p-5 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                        <h2 className="text-2xl font-display font-medium text-[#F0EDE6] flex items-center gap-2">
                           {activeHost.displayName}
-                          {activeHost.isVerified && <CheckCircle size={18} className="text-velvet-gold" />}
+                          {activeHost.isVerified && <CheckCircle size={18} strokeWidth={1.5} className="text-[#C9A84C]" />}
                         </h2>
                         <div className="flex gap-3 items-center mt-1">
                           <div className="flex items-center gap-1">
                             <span className="w-2 h-2 rounded-full bg-green-400" />
-                            <span className="text-[11px] text-white/40 font-semibold">{activeHost.lastActive}</span>
+                            <span className="text-[10px] text-[#7A7870] uppercase tracking-[0.12em]">{activeHost.lastActive}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Star size={11} className="text-velvet-gold" />
-                            <span className="text-[11px] text-white/60 font-semibold">{activeHost.rating}</span>
+                            <Star size={11} strokeWidth={1.5} className="text-[#C9A84C]" />
+                            <span className="text-[10px] text-[#7A7870]">{activeHost.rating}</span>
                           </div>
                         </div>
                       </div>
-
                       <div className="flex gap-1.5">
                         {activeHost.categories.slice(0, 2).map((c, i) => (
-                          <span key={i} className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-semibold text-white/40">{c}</span>
+                          <span key={i} className="px-2 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#C9A84C] border border-[rgba(201,168,76,0.3)]">{c}</span>
                         ))}
                       </div>
                     </div>
-
-                    <p className="text-xs text-white/50 leading-relaxed line-clamp-2">
-                      {activeHost.bio}
-                    </p>
-
-                    <div className="flex items-center gap-2 text-[11px] text-white/30">
-                      <span>{activeHost.trustScore}% Trust Score</span>
-                      <span className="w-1 h-1 rounded-full bg-white/20" />
-                      <span>{activeHost.responseRate}% Response Rate</span>
+                    <p className="text-xs text-[#7A7870] leading-relaxed line-clamp-2">{activeHost.bio}</p>
+                    <div className="flex items-center gap-2 text-[10px] text-[#7A7870] uppercase tracking-[0.12em]">
+                      <span>{activeHost.trustScore}% Trust</span>
+                      <span className="w-1 h-1 rounded-full bg-white/[0.07]" />
+                      <span>{activeHost.responseRate}% Response</span>
                     </div>
-
-                    <div className="flex justify-around items-center mt-3 border-t border-white/5 pt-4">
-                      <button
-                        onClick={handleSwipeLeft}
-                        className="w-12 h-12 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all flex items-center justify-center text-white/40 hover:text-white"
-                      >
-                        <X size={18} />
+                    <div className="flex justify-around items-center mt-2 border-t border-white/[0.07] pt-4">
+                      <button onClick={handleSwipeLeft}
+                        className="min-w-[48px] min-h-[48px] rounded-full border border-white/[0.2] hover:border-white/30 transition-all flex items-center justify-center text-[#7A7870] hover:text-[#F0EDE6]">
+                        <X size={18} strokeWidth={1.5} />
                       </button>
-
-                      <Link
-                        href={`/profile/${activeHost.id}`}
-                        className="px-6 py-2.5 bg-white/5 border border-white/5 hover:bg-white/10 rounded-xl text-xs font-semibold text-white/60 hover:text-white transition-all"
-                      >
-                        View Profile
+                      <Link href={`/profile/${activeHost.id}`}
+                        className="px-6 py-2.5 border border-white/[0.2] text-[#F0EDE6] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium hover:bg-white/[0.04] transition-all">
+                        View profile
                       </Link>
-
-                      <button
-                        onClick={handleSwipeRight}
-                        className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/15 text-white transition-all flex items-center justify-center hover:scale-105 border border-white/10"
-                      >
-                        <Heart size={18} />
+                      <button onClick={handleSwipeRight}
+                        className="min-w-[48px] min-h-[48px] rounded-full bg-[#C9A84C] text-[#0E0E12] transition-all flex items-center justify-center active:scale-[0.97]">
+                        <Heart size={18} strokeWidth={1.5} />
                       </button>
                     </div>
                   </div>
                 </motion.div>
               ) : (
                 <div className="text-center p-6">
-                  <Compass size={48} className="text-white/20 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-white">No More Profiles</h3>
-                  <p className="text-sm text-white/40 mt-2">Adjust filters to discover more members.</p>
+                  <Compass size={48} strokeWidth={1.5} className="text-[#7A7870] mx-auto mb-4" />
+                  <h3 className="text-xl font-display font-medium text-[#F0EDE6]">No More Profiles</h3>
+                  <p className="text-xs text-[#7A7870] mt-2">Adjust filters to discover more members.</p>
                 </div>
               )}
             </AnimatePresence>
@@ -312,61 +205,35 @@ export default function Discover() {
         )}
 
         {viewMode === "grid" && (
-          <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 self-start">
+          <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 self-start">
             {filteredCompanions.map((host) => (
-              <GlassCard key={host.id} className="overflow-hidden border border-white/5 flex flex-col group">
+              <GlassCard key={host.id} className="overflow-hidden flex flex-col group">
                 <div className="relative aspect-[3/4] overflow-hidden">
-                  <img src={host.avatarUrl} alt={host.displayName} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
+                  <img src={host.avatarUrl} alt={host.displayName} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(14,14,18,0.7)] to-transparent" />
                   <div className="absolute top-3 left-3">
-                    <span className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-semibold text-white/60 border border-white/10">
-                      {host.distanceKm} km
-                    </span>
+                    <span className="px-2 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#C9A84C] border border-[rgba(201,168,76,0.3)]">{host.distanceKm} km</span>
                   </div>
-
                   <div className="absolute top-3 right-3">
-                    <span className="px-2 py-0.5 rounded-md bg-white/10 text-[10px] font-bold text-white">
-                      ${host.pricingHourly}/hr
-                    </span>
+                    <span className="px-2 py-0.5 bg-[#1A1A22] rounded-[100px] text-[10px] font-medium text-[#F0EDE6] border border-white/[0.07]">${host.pricingHourly}/hr</span>
                   </div>
-
                   <div className="absolute bottom-3 left-3">
-                    <h3 className="text-base font-bold text-white flex items-center gap-1">
-                      {host.displayName}
-                      {host.isVerified && <CheckCircle size={13} className="text-velvet-gold" />}
-                    </h3>
+                    <h3 className="text-base font-display font-medium text-[#F0EDE6] flex items-center gap-1">{host.displayName}{host.isVerified && <CheckCircle size={13} strokeWidth={1.5} className="text-[#C9A84C]" />}</h3>
                   </div>
                 </div>
-
-                <div className="p-4 flex-1 flex flex-col justify-between gap-3">
-                  <p className="text-[11px] text-white/40 leading-relaxed line-clamp-2">{host.bio}</p>
-
+                <div className="p-5 flex-1 flex flex-col justify-between gap-3">
+                  <p className="text-[11px] text-[#7A7870] leading-relaxed line-clamp-2">{host.bio}</p>
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                      <Star size={10} className="text-velvet-gold" />
-                      <span className="text-[10px] text-white/60">{host.rating}</span>
-                    </div>
-                    <span className="text-[10px] text-white/30">•</span>
-                    <span className="text-[10px] text-white/30">{host.trustScore}% trust</span>
+                    <Star size={10} strokeWidth={1.5} className="text-[#C9A84C]" />
+                    <span className="text-[10px] text-[#7A7870]">{host.rating}</span>
+                    <span className="text-[10px] text-[#7A7870]">•</span>
+                    <span className="text-[10px] text-[#7A7870]">{host.trustScore}% trust</span>
                   </div>
-
                   <div className="flex gap-2">
-                    <Link
-                      href={`/profile/${host.id}`}
-                      className="flex-1 py-2 text-center bg-white/5 border border-white/5 hover:bg-white/10 rounded-lg text-[11px] font-semibold text-white/60"
-                    >
-                      View Profile
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        const cid = createConversation(host.id);
-                        window.location.href = `/chat?conv=${cid}`;
-                      }}
-                      className="p-2 bg-white/10 hover:bg-white/15 rounded-lg text-white"
-                    >
-                      <MessageSquare size={14} />
+                    <Link href={`/profile/${host.id}`} className="flex-1 py-2 text-center border border-white/[0.2] text-[#F0EDE6] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium hover:bg-white/[0.04] transition-all">View profile</Link>
+                    <button onClick={() => { const cid = createConversation(host.id); window.location.href = `/chat?conv=${cid}`; }}
+                      className="min-w-[48px] min-h-[48px] bg-[#C9A84C] text-[#0E0E12] rounded-[100px] flex items-center justify-center transition-all active:scale-[0.97]">
+                      <MessageSquare size={14} strokeWidth={1.5} />
                     </button>
                   </div>
                 </div>
@@ -376,102 +243,63 @@ export default function Discover() {
         )}
 
         {viewMode === "map" && (
-          <div className="w-full max-w-6xl h-[600px] border border-white/10 rounded-3xl overflow-hidden relative self-start glass-panel-glow">
-            <div className="absolute inset-0 bg-velvet-black flex items-center justify-center">
-              <div className="absolute w-[500px] h-[500px] border border-white/5 rounded-full" />
-              <div className="absolute w-[300px] h-[300px] border border-white/5 rounded-full" />
-              <div className="absolute w-[700px] h-[700px] border border-white/5 rounded-full" />
-
-              <div className="text-center z-10 max-w-md p-6">
-                <MapPin size={32} className="text-velvet-gold mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-white">Geo Discovery</h3>
-                <p className="text-xs text-white/40 mt-2 leading-relaxed">
-                  Real-time locations of premium members within your area.
-                </p>
-              </div>
-
-              {filteredCompanions.map((host, idx) => (
-                <motion.div
-                  key={host.id}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.15 }}
-                  className="absolute pointer-events-auto cursor-pointer"
-                  style={{ top: `${30 + idx * 15}%`, left: `${25 + idx * 18}%` }}
-                >
-                  <Link href={`/profile/${host.id}`} className="group relative flex flex-col items-center">
-                    <div className="w-10 h-10 rounded-full border-2 border-velvet-gold/40 overflow-hidden shadow-lg group-hover:scale-110 transition-all">
-                      <img src={host.avatarUrl} alt="" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="absolute -bottom-6 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded border border-white/10 text-[9px] text-white font-semibold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      {host.displayName}
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
+          <div className="w-full max-w-6xl h-[600px] border border-white/[0.07] rounded-[18px] overflow-hidden relative self-start flex items-center justify-center bg-[#0E0E12]">
+            <div className="absolute w-[500px] h-[500px] border border-white/[0.07] rounded-full" />
+            <div className="absolute w-[300px] h-[300px] border border-white/[0.07] rounded-full" />
+            <div className="text-center z-10 max-w-md p-6">
+              <MapPin size={32} strokeWidth={1.5} className="text-[#C9A84C] mx-auto mb-3" />
+              <h3 className="text-lg font-display font-medium text-[#F0EDE6]">Geo Discovery</h3>
+              <p className="text-xs text-[#7A7870] mt-2">Real-time locations of premium members near you.</p>
             </div>
+            {filteredCompanions.map((host, idx) => (
+              <motion.div key={host.id} initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.06, duration: 0.36, ease: [0.25, 0.1, 0.25, 1] }}
+                className="absolute pointer-events-auto cursor-pointer"
+                style={{ top: `${30 + idx * 15}%`, left: `${25 + idx * 18}%` }}>
+                <Link href={`/profile/${host.id}`} className="group relative flex flex-col items-center">
+                  <div className="w-[52px] h-[52px] rounded-full border-2 border-[#C9A84C] overflow-hidden group-hover:scale-110 transition-all">
+                    <img src={host.avatarUrl} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="absolute -bottom-6 bg-[#1A1A22] border border-white/[0.07] px-2 py-0.5 rounded-[12px] text-[9px] text-[#F0EDE6] font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    {host.displayName}
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
         )}
       </div>
 
       <AnimatePresence>
         {matchUser && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg"
-          >
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-velvet-gold/[0.03] rounded-full blur-[140px]" />
-
-            <motion.div
-              initial={{ scale: 0.9, y: 30 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="relative w-full max-w-md p-8 glass-panel-glow border-velvet-gold/20 text-center flex flex-col items-center"
-            >
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-velvet-gold/10 border border-velvet-gold/20 rounded-full text-xs text-velvet-gold font-semibold mb-6">
-                <Sparkles size={12} />
-                <span>Connection Made!</span>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-[rgba(14,14,18,0.95)] backdrop-blur-lg">
+            <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+              transition={{ duration: 0.36, ease: [0.25, 0.1, 0.25, 1] }}
+              className="relative w-full max-w-md p-8 bg-[#1A1A22] rounded-[24px] border border-[rgba(201,168,76,0.2)] text-center flex flex-col items-center">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] text-[#C9A84C] border border-[rgba(201,168,76,0.3)] font-medium mb-6">
+                <Sparkles size={12} strokeWidth={1.5} />Connection Made
               </div>
-
-              <h2 className="text-3xl font-display font-black text-white tracking-wide mb-6">You Connected</h2>
-
+              <h2 className="text-3xl font-display font-medium text-[#F0EDE6] mb-6">You Connected</h2>
               <div className="flex items-center gap-6 mb-8">
-                <div className="w-20 h-20 rounded-full border-2 border-white/20 overflow-hidden">
+                <div className="w-[52px] h-[52px] rounded-full border-2 border-white/[0.2] overflow-hidden">
                   <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" alt="" className="w-full h-full object-cover" />
                 </div>
-
-                <div className="text-velvet-gold font-display font-black text-xl">✦</div>
-
-                <div className="w-20 h-20 rounded-full border-2 border-velvet-gold/40 overflow-hidden">
+                <div className="text-[#C9A84C] font-display text-xl">✦</div>
+                <div className="w-[52px] h-[52px] rounded-full border-2 border-[#C9A84C] overflow-hidden">
                   <img src={matchUser.avatarUrl} alt={matchUser.displayName} className="w-full h-full object-cover" />
                 </div>
               </div>
-
-              <p className="text-sm text-white/60 mb-8 max-w-sm leading-relaxed">
-                You and {matchUser.displayName} are both verified. Connect and arrange your experience.
-              </p>
-
+              <p className="text-sm text-[#7A7870] mb-8 max-w-sm leading-relaxed">You and {matchUser.displayName} are both verified. Connect and arrange your experience.</p>
               <div className="w-full flex flex-col gap-3">
-                <button
-                  onClick={() => {
-                    const cid = createConversation(matchUser.id);
-                    setMatchUser(null);
-                    window.location.href = `/chat?conv=${cid}`;
-                  }}
-                  className="w-full py-3.5 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl text-sm flex items-center justify-center gap-2 border border-white/10"
-                >
-                  <MessageSquare size={16} />
-                  <span>Send Message</span>
+                <button onClick={() => { const cid = createConversation(matchUser.id); setMatchUser(null); window.location.href = `/chat?conv=${cid}`; }}
+                  className="w-full py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
+                  <MessageSquare size={16} strokeWidth={1.5} className="inline mr-2" />Send message
                 </button>
-
-                <button
-                  onClick={() => setMatchUser(null)}
-                  className="w-full py-3 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-xl border border-white/5 text-sm transition-all"
-                >
-                  Keep Browsing
+                <button onClick={() => setMatchUser(null)}
+                  className="w-full py-3 border border-white/[0.2] text-[#7A7870] hover:text-[#F0EDE6] rounded-[100px] text-sm transition-all active:scale-[0.97]">
+                  Keep browsing
                 </button>
               </div>
             </motion.div>

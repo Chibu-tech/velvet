@@ -4,16 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  Send,
-  Phone,
-  Image as ImageIcon,
-  ShieldAlert,
-  CheckCircle,
-  MoreVertical,
-  Check,
-  ChevronLeft,
-  Compass,
-  Mic,
+  Send, Image as ImageIcon, ShieldAlert, CheckCircle,
+  MoreVertical, Check, ChevronLeft, Compass, Mic,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVelvetStore } from "@/store/useVelvetStore";
@@ -36,16 +28,11 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (activeConvParam) {
-      setSelectedConvId(activeConvParam);
-    } else if (conversations.length > 0) {
-      setSelectedConvId(conversations[0].id);
-    }
+    if (activeConvParam) setSelectedConvId(activeConvParam);
+    else if (conversations.length > 0) setSelectedConvId(conversations[0].id);
   }, [activeConvParam, conversations]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, selectedConvId]);
+  useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, selectedConvId]);
 
   useEffect(() => {
     if (!selectedConvId) return;
@@ -73,54 +60,37 @@ export default function Chat() {
   const quickEmojis = ["🥂", "✨", "🖤", "🍷", "📍", "👋"];
 
   return (
-    <div className="flex-1 flex bg-velvet-black min-h-[calc(100vh-4rem)] z-10 relative">
-      <div className={`w-full md:w-80 border-r border-white/5 flex-col flex ${selectedConvId ? "hidden md:flex" : "flex"}`}>
-        <div className="p-4 border-b border-white/5 bg-velvet-black/50">
-          <h2 className="text-lg font-display font-bold text-white">Messages</h2>
-          <p className="text-[11px] text-white/40 mt-0.5 uppercase tracking-wider font-semibold">Your Connections</p>
+    <div className="flex-1 flex bg-[#0E0E12] min-h-[calc(100vh-4rem)] z-10 relative">
+      <div className={`w-full md:w-80 border-r border-white/[0.07] flex-col flex ${selectedConvId ? "hidden md:flex" : "flex"}`}>
+        <div className="p-5 border-b border-white/[0.07] bg-[#0E0E12]/50">
+          <h2 className="text-lg font-display font-medium text-[#F0EDE6]">Messages</h2>
+          <p className="text-[10px] text-[#7A7870] mt-0.5 uppercase tracking-[0.12em] font-medium">Your Connections</p>
         </div>
-
         <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
           {conversations.map((conv) => {
             const companion = companions.find(c => c.id === conv.companionId);
             if (!companion) return null;
             const active = conv.id === selectedConvId;
             return (
-              <GlassCard
-                key={conv.id}
-                onClick={() => setSelectedConvId(conv.id)}
-                className={`p-3.5 border ${active ? "border-white/20 bg-white/5" : "border-transparent bg-white/[0.01]"}`}
-              >
+              <GlassCard key={conv.id} onClick={() => setSelectedConvId(conv.id)}
+                className={`p-3.5 border ${active ? "border-[#C9A84C] bg-[#22222E]" : "border-transparent bg-transparent"}`}>
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+                    <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-white/[0.07]">
                       <img src={companion.avatarUrl} alt="" className="w-full h-full object-cover" />
                     </div>
-                    {companion.onlineStatus && (
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-velvet-black" />
-                    )}
+                    {companion.onlineStatus && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#0E0E12]" />}
                   </div>
-
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-baseline mb-0.5">
-                      <h4 className="text-xs font-bold text-white flex items-center gap-1">
-                        {companion.displayName}
-                        {companion.isVerified && <CheckCircle size={12} className="text-velvet-gold" />}
+                      <h4 className="text-xs font-medium text-[#F0EDE6] flex items-center gap-1">
+                        {companion.displayName}{companion.isVerified && <CheckCircle size={12} strokeWidth={1.5} className="text-[#C9A84C]" />}
                       </h4>
-                      <span className="text-[9px] text-white/40">
-                        {new Date(conv.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
+                      <span className="text-[9px] text-[#7A7870]">{new Date(conv.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
-                    <p className="text-[11px] text-white/40 truncate leading-relaxed">
-                      {conv.lastMessage}
-                    </p>
+                    <p className="text-[11px] text-[#7A7870] truncate leading-relaxed">{conv.lastMessage}</p>
                   </div>
-
-                  {conv.unreadCount > 0 && (
-                    <span className="w-4 h-4 rounded-full bg-velvet-gold text-[9px] font-bold text-white flex items-center justify-center">
-                      {conv.unreadCount}
-                    </span>
-                  )}
+                  {conv.unreadCount > 0 && <span className="w-4 h-4 rounded-full bg-[#C9A84C] text-[9px] font-medium text-[#0E0E12] flex items-center justify-center">{conv.unreadCount}</span>}
                 </div>
               </GlassCard>
             );
@@ -128,58 +98,37 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className={`flex-1 flex-col flex bg-velvet-black/40 ${!selectedConvId ? "hidden md:flex items-center justify-center text-center p-6" : "flex"}`}>
+      <div className={`flex-1 flex-col flex bg-[#0E0E12]/40 ${!selectedConvId ? "hidden md:flex items-center justify-center text-center p-6" : "flex"}`}>
         {selectedConvId && activeCompanion ? (
           <>
-            <div className="px-6 py-3.5 border-b border-white/5 bg-velvet-black/50 flex items-center justify-between">
+            <div className="px-6 py-3.5 border-b border-white/[0.07] bg-[#0E0E12]/50 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setSelectedConvId(null)}
-                  className="p-1 text-white/40 hover:text-white md:hidden"
-                >
-                  <ChevronLeft size={20} />
+                <button onClick={() => setSelectedConvId(null)} className="p-1 text-[#7A7870] hover:text-[#F0EDE6] md:hidden">
+                  <ChevronLeft size={20} strokeWidth={1.5} />
                 </button>
-
-                <div className="w-9 h-9 rounded-full overflow-hidden border border-white/10">
+                <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-white/[0.07]">
                   <img src={activeCompanion.avatarUrl} alt="" className="w-full h-full object-cover" />
                 </div>
-
                 <div>
-                  <h3 className="text-sm font-bold text-white flex items-center gap-1">
-                    {activeCompanion.displayName}
-                    {activeCompanion.isVerified && <CheckCircle size={13} className="text-velvet-gold" />}
+                  <h3 className="text-sm font-medium text-[#F0EDE6] flex items-center gap-1">
+                    {activeCompanion.displayName}{activeCompanion.isVerified && <CheckCircle size={13} strokeWidth={1.5} className="text-[#C9A84C]" />}
                   </h3>
-                  <span className="text-[10px] text-white/40">
-                    {activeCompanion.onlineStatus ? "Online" : "Away"} • {activeCompanion.lastActive}
-                  </span>
+                  <span className="text-[10px] text-[#7A7870]">{activeCompanion.onlineStatus ? "Online" : "Away"} • {activeCompanion.lastActive}</span>
                 </div>
               </div>
-
               <div className="relative">
-                <button
-                  onClick={() => setShowOptions(!showOptions)}
-                  className="p-2 text-white/40 hover:text-white rounded-lg hover:bg-white/5 transition-all"
-                >
-                  <MoreVertical size={16} />
+                <button onClick={() => setShowOptions(!showOptions)}
+                  className="min-w-[48px] min-h-[48px] text-[#7A7870] hover:text-[#F0EDE6] rounded-full hover:bg-white/[0.04] transition-all flex items-center justify-center">
+                  <MoreVertical size={16} strokeWidth={1.5} />
                 </button>
-
                 <AnimatePresence>
                   {showOptions && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                      className="absolute right-0 mt-2 w-40 glass-panel border-white/10 rounded-xl p-1 shadow-lg z-50 text-xs"
-                    >
-                      <Link href={`/profile/${activeCompanion.id}`} className="block px-3 py-2 text-white/60 hover:text-white hover:bg-white/5 rounded-lg">
-                        View Profile
-                      </Link>
-                      <button
-                        onClick={() => { alert("Report submitted."); setShowOptions(false); }}
-                        className="w-full text-left px-3 py-2 text-rose-400 hover:bg-rose-500/10 rounded-lg"
-                      >
-                        Block & Report
-                      </button>
+                    <motion.div initial={{ opacity: 0, scale: 0.95, y: -5 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                      className="absolute right-0 mt-2 w-40 bg-[#1A1A22] border border-white/[0.07] rounded-[18px] p-1 shadow-lg z-50 text-xs">
+                      <Link href={`/profile/${activeCompanion.id}`} className="block px-3 py-2 text-[#7A7870] hover:text-[#F0EDE6] hover:bg-white/[0.04] rounded-[12px]">View Profile</Link>
+                      <button onClick={() => { alert("Report submitted."); setShowOptions(false); }}
+                        className="w-full text-left px-3 py-2 text-rose-400 hover:bg-rose-500/10 rounded-[12px]">Block & Report</button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -191,83 +140,62 @@ export default function Chat() {
                 const isMe = msg.senderId === "user";
                 return (
                   <div key={msg.id} className={`flex flex-col max-w-[70%] ${isMe ? "self-end items-end" : "self-start items-start"}`}>
-                    <div className={`px-4 py-2.5 rounded-2xl text-xs leading-relaxed ${
-                      isMe
-                        ? "bg-white/10 text-white rounded-br-none"
-                        : "bg-white/5 border border-white/5 text-white/70 rounded-bl-none"
-                    }`}>
-                      {msg.content}
-                    </div>
-                    <div className="flex items-center gap-1 mt-1 text-[9px] text-white/40 font-medium">
+                    <div className={`px-4 py-2.5 rounded-[18px] text-xs leading-relaxed ${
+                      isMe ? "bg-[#C9A84C] text-[#0E0E12]" : "bg-[#22222E] border border-white/[0.07] text-[#F0EDE6]"
+                    }`}>{msg.content}</div>
+                    <div className="flex items-center gap-1 mt-1 text-[9px] text-[#7A7870] font-medium">
                       <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      {isMe && <Check size={10} className="text-velvet-gold" />}
+                      {isMe && <Check size={10} strokeWidth={1.5} className="text-[#C9A84C]" />}
                     </div>
                   </div>
                 );
               })}
-
               {isTyping && (
                 <div className="self-start flex flex-col items-start gap-1.5">
-                  <div className="bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-bl-none flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-velvet-gold rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 bg-velvet-gold rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 bg-velvet-gold rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  <div className="bg-[#22222E] border border-white/[0.07] px-4 py-3 rounded-[18px] rounded-bl-none flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-[#C9A84C] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 bg-[#C9A84C] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 bg-[#C9A84C] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                   </div>
-                  <span className="text-[9px] text-white/40 uppercase tracking-widest font-semibold">{activeCompanion.displayName} is typing...</span>
+                  <span className="text-[9px] text-[#7A7870] uppercase tracking-[0.12em] font-medium">{activeCompanion.displayName} is typing...</span>
                 </div>
               )}
-
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 border-t border-white/5 bg-velvet-black/30 flex flex-col gap-3">
+            <div className="p-4 border-t border-white/[0.07] bg-[#0E0E12]/30 flex flex-col gap-3">
               <div className="flex gap-2">
                 {quickEmojis.map((emoji) => (
-                  <button
-                    key={emoji}
-                    onClick={() => setInputText(prev => prev + emoji)}
-                    className="p-1.5 bg-white/5 border border-white/5 hover:border-white/20 rounded-lg text-sm hover:scale-105 transition-all"
-                  >
-                    {emoji}
-                  </button>
+                  <button key={emoji} onClick={() => setInputText(prev => prev + emoji)}
+                    className="min-w-[32px] min-h-[32px] bg-[#22222E] border border-white/[0.07] hover:border-white/20 rounded-full text-sm transition-all"> {emoji} </button>
                 ))}
               </div>
-
               <form onSubmit={handleSend} className="flex gap-3">
-                <button type="button" className="p-3 bg-white/5 hover:bg-white/10 border border-white/5 text-white/40 hover:text-white rounded-xl transition-all shrink-0">
-                  <ImageIcon size={16} />
+                <button type="button"
+                  className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] text-[#7A7870] hover:text-[#F0EDE6] rounded-full transition-all flex items-center justify-center active:scale-[0.97]">
+                  <ImageIcon size={16} strokeWidth={1.5} />
                 </button>
-
-                <button type="button" className="p-3 bg-white/5 hover:bg-white/10 border border-white/5 text-white/40 hover:text-white rounded-xl transition-all shrink-0">
-                  <Mic size={16} />
+                <button type="button"
+                  className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] text-[#7A7870] hover:text-[#F0EDE6] rounded-full transition-all flex items-center justify-center active:scale-[0.97]">
+                  <Mic size={16} strokeWidth={1.5} />
                 </button>
-
                 <div className="relative flex-1">
-                  <input
-                    type="text"
-                    placeholder={`Message ${activeCompanion.displayName}...`}
-                    value={inputText}
+                  <input type="text" placeholder={`Message ${activeCompanion.displayName}...`} value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    className="w-full pl-4 pr-10 py-3 bg-white/5 rounded-xl border border-white/10 text-white text-xs focus:border-velvet-gold/40 focus:outline-none transition-all"
-                  />
+                    className="w-full pl-4 pr-10 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-xs placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
                 </div>
-
-                <button
-                  type="submit"
-                  className="p-3 bg-white/10 hover:bg-white/15 text-white rounded-xl border border-white/10 transition-all shrink-0 hover:scale-105"
-                >
-                  <Send size={16} />
+                <button type="submit"
+                  className="min-w-[48px] min-h-[48px] bg-[#C9A84C] text-[#0E0E12] rounded-full transition-all flex items-center justify-center active:scale-[0.97]">
+                  <Send size={16} strokeWidth={1.5} />
                 </button>
               </form>
             </div>
           </>
         ) : (
           <div className="text-center p-6">
-            <Compass size={40} className="text-white/20 mx-auto mb-3" />
-            <h3 className="text-lg font-bold text-white">Select a Conversation</h3>
-            <p className="text-xs text-white/40 mt-1 max-w-xs mx-auto leading-relaxed">
-              Open a chat to connect with verified members.
-            </p>
+            <Compass size={40} strokeWidth={1.5} className="text-[#7A7870] mx-auto mb-3" />
+            <h3 className="text-lg font-display font-medium text-[#F0EDE6]">Select a Conversation</h3>
+            <p className="text-xs text-[#7A7870] mt-1 max-w-xs mx-auto">Open a chat to connect with verified members.</p>
           </div>
         )}
       </div>

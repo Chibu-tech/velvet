@@ -2,25 +2,16 @@
 
 import { useState } from "react";
 import {
-  Gift,
-  Copy,
-  Share2,
-  Users,
-  Award,
-  ChevronRight,
-  CheckCircle,
-  Sparkles,
-  TrendingUp,
-  Star,
+  Gift, Copy, Share2, Users, Award, ChevronRight,
+  CheckCircle, Sparkles, TrendingUp, Star,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { useVelvetStore } from "@/store/useVelvetStore";
 
 export default function Referral() {
   const currentUser = useVelvetStore((state) => state.currentUser);
   const [copied, setCopied] = useState(false);
-  const referralCode = currentUser?.username?.toUpperCase() + "VIP" || "VELVETVIP";
+  const referralCode = (currentUser?.username?.toUpperCase() || "VELVET") + "VIP";
 
   const referralStats = [
     { label: "Invites Sent", value: 3, icon: Users },
@@ -42,96 +33,82 @@ export default function Referral() {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-velvet-black min-h-[calc(100vh-4rem)] p-4 md:p-8 relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] bg-white/[0.02] rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-velvet-gold/[0.02] rounded-full blur-[90px] pointer-events-none" />
-
+    <div className="flex-1 flex flex-col bg-[#0E0E12] min-h-[calc(100vh-4rem)] p-5 md:p-8 relative overflow-hidden">
       <div className="w-full max-w-4xl mx-auto z-10 flex flex-col gap-8">
         <div className="text-center md:text-left">
-          <h1 className="text-3xl font-display font-black tracking-tight text-white flex items-center gap-2 justify-center md:justify-start">
+          <h1 className="text-3xl font-display font-medium tracking-tight text-[#F0EDE6] flex items-center gap-2 justify-center md:justify-start">
             Referral Program
-            <span className="text-xs bg-velvet-gold/10 text-velvet-gold border border-velvet-gold/20 px-2 py-0.5 rounded-full font-semibold">
-              Invite Only
-            </span>
+            <span className="text-[10px] bg-[#22222E] text-[#C9A84C] border border-[rgba(201,168,76,0.3)] px-2 py-0.5 rounded-[100px] uppercase tracking-[0.12em] font-medium">Invite Only</span>
           </h1>
-          <p className="text-xs text-white/40 mt-1 text-center md:text-left">Invite trusted friends and earn rewards.</p>
+          <p className="text-[10px] text-[#7A7870] mt-1 text-center md:text-left uppercase tracking-[0.12em]">Invite trusted friends and earn rewards.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {referralStats.map((stat, idx) => {
             const Icon = stat.icon;
             return (
-              <GlassCard key={idx} className="p-5 border border-white/5 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-velvet-gold shrink-0">
-                  <Icon size={18} />
+              <GlassCard key={idx} className="p-5 flex items-center gap-4">
+                <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-white/[0.07] flex items-center justify-center shrink-0">
+                  <Icon size={18} strokeWidth={1.5} className="text-[#C9A84C]" />
                 </div>
                 <div>
-                  <span className="text-lg font-bold font-display text-white">{stat.value}</span>
-                  <span className="text-[10px] text-white/40 font-semibold uppercase tracking-wider block">{stat.label}</span>
+                  <span className="text-lg font-display font-medium text-[#F0EDE6]">{stat.value}</span>
+                  <span className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em] block">{stat.label}</span>
                 </div>
               </GlassCard>
             );
           })}
         </div>
 
-        <GlassCard className="p-8 border border-white/5 text-center flex flex-col items-center gap-6">
-          <div className="w-16 h-16 rounded-full bg-velvet-gold/10 border border-velvet-gold/20 flex items-center justify-center text-velvet-gold">
-            <Gift size={32} />
+        <GlassCard className="p-8 text-center flex flex-col items-center gap-6">
+          <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-[rgba(201,168,76,0.3)] flex items-center justify-center">
+            <Gift size={32} strokeWidth={1.5} className="text-[#C9A84C]" />
           </div>
-
           <div>
-            <h2 className="text-2xl font-bold font-display text-white">Your Invite Code</h2>
-            <p className="text-xs text-white/40 mt-1 max-w-md mx-auto">
-              Share your personal code with friends. They get priority access, you earn rewards.
-            </p>
+            <h2 className="text-2xl font-display font-medium text-[#F0EDE6]">Your Invite Code</h2>
+            <p className="text-xs text-[#7A7870] mt-1 max-w-md mx-auto">Share your code. Friends get priority access, you earn rewards.</p>
           </div>
-
           <div className="flex items-center gap-3 w-full max-w-md">
-            <div className="flex-1 p-4 rounded-xl bg-white/5 border border-white/10 text-center">
-              <span className="text-xl font-bold font-display tracking-widest text-velvet-gold">{referralCode}</span>
+            <div className="flex-1 p-4 rounded-[12px] bg-[#22222E] border border-white/[0.07] text-center">
+              <span className="text-xl font-display font-medium tracking-widest text-[#C9A84C]">{referralCode}</span>
             </div>
-
-            <button
-              onClick={handleCopy}
-              className="p-4 bg-white/10 hover:bg-white/15 text-white rounded-xl border border-white/10 transition-all hover:scale-105"
-            >
-              {copied ? <CheckCircle size={20} className="text-green-400" /> : <Copy size={20} />}
+            <button onClick={handleCopy}
+              className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] rounded-full transition-all flex items-center justify-center active:scale-[0.97] hover:bg-[#C9A84C] hover:text-[#0E0E12]">
+              {copied ? <CheckCircle size={20} strokeWidth={1.5} className="text-green-400" /> : <Copy size={20} strokeWidth={1.5} className="text-[#C9A84C]" />}
             </button>
-
-            <button className="p-4 bg-white/10 hover:bg-white/15 text-white rounded-xl border border-white/10 transition-all hover:scale-105">
-              <Share2 size={20} />
+            <button className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] rounded-full transition-all flex items-center justify-center active:scale-[0.97] hover:bg-[#C9A84C] hover:text-[#0E0E12]">
+              <Share2 size={20} strokeWidth={1.5} className="text-[#C9A84C]" />
             </button>
           </div>
-
           {copied && <p className="text-xs text-green-400">Copied to clipboard!</p>}
         </GlassCard>
 
-        <GlassCard className="p-6 border border-white/5">
-          <h2 className="text-lg font-bold text-white mb-6">Reward Tiers</h2>
+        <GlassCard className="p-6">
+          <h2 className="text-lg font-display font-medium text-[#F0EDE6] mb-6">Reward Tiers</h2>
           <div className="flex flex-col gap-4">
             {tiers.map((tier, idx) => {
               const Icon = tier.icon;
               return (
-                <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
-                  <div className="w-10 h-10 rounded-full bg-velvet-gold/10 flex items-center justify-center text-velvet-gold shrink-0">
-                    <Icon size={18} />
+                <div key={idx} className="flex items-center gap-4 p-4 rounded-[18px] bg-[#22222E] border border-white/[0.07]">
+                  <div className="w-[52px] h-[52px] rounded-full bg-[#1A1A22] flex items-center justify-center shrink-0">
+                    <Icon size={18} strokeWidth={1.5} className="text-[#C9A84C]" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-white">{tier.invites} {tier.invites === 1 ? "Invite" : "Invites"}</p>
-                    <p className="text-xs text-white/40">Earn {tier.reward}</p>
+                    <p className="text-sm font-medium text-[#F0EDE6]">{tier.invites} {tier.invites === 1 ? "Invite" : "Invites"}</p>
+                    <p className="text-xs text-[#7A7870]">Earn {tier.reward}</p>
                   </div>
-                  <ChevronRight size={16} className="text-white/20" />
+                  <ChevronRight size={16} strokeWidth={1.5} className="text-[#7A7870]" />
                 </div>
               );
             })}
           </div>
         </GlassCard>
 
-        <GlassCard className="p-6 border border-white/5">
-          <h2 className="text-lg font-bold text-white mb-4">Invite History</h2>
+        <GlassCard className="p-6">
+          <h2 className="text-lg font-display font-medium text-[#F0EDE6] mb-4">Invite History</h2>
           <div className="text-center py-8">
-            <Users size={32} className="text-white/20 mx-auto mb-2" />
-            <p className="text-xs text-white/40">Send your first invite to track it here.</p>
+            <Users size={32} strokeWidth={1.5} className="text-[#7A7870] mx-auto mb-2" />
+            <p className="text-xs text-[#7A7870]">Send your first invite to track it here.</p>
           </div>
         </GlassCard>
       </div>
