@@ -4,13 +4,11 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Calendar as CalendarIcon, Clock, DollarSign, CheckCircle2, XCircle,
-  AlertCircle, ChevronRight, ShieldCheck, LogIn, LogOut, Star, ShieldAlert,
+  AlertCircle, ChevronRight, ShieldCheck,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useVelvetStore } from "@/store/useVelvetStore";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { CheckInCard } from "@/components/ui/CheckInCard";
-import { RatingModal } from "@/components/ui/RatingModal";
 
 export default function Bookings() {
   const searchParams = useSearchParams();
@@ -20,7 +18,6 @@ export default function Bookings() {
   const bookings = useVelvetStore((state) => state.bookings);
   const requestBooking = useVelvetStore((state) => state.requestBooking);
   const updateBookingStatus = useVelvetStore((state) => state.updateBookingStatus);
-  const currentUser = useVelvetStore((state) => state.currentUser);
 
   const [step, setStep] = useState(1);
   const [selectedCompId, setSelectedCompId] = useState(companionParamId || "");
@@ -29,23 +26,20 @@ export default function Bookings() {
   const [hours, setHours] = useState(4);
   const [specialRequests, setSpecialRequests] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [ratingBooking, setRatingBooking] = useState<typeof bookings[0] | null>(null);
 
   useEffect(() => { if (companionParamId) setSelectedCompId(companionParamId); }, [companionParamId]);
 
   const activeCompanion = companions.find(c => c.id === selectedCompId);
   const calculatedTotal = activeCompanion ? activeCompanion.pricingHourly * hours : 0;
 
-  const blockedByVerification = activeCompanion?.requireVerifiedClients && currentUser?.verificationStatus !== "verified";
-
   const handleNextStep = () => {
-    if (step === 1 && selectedCompId && !blockedByVerification) setStep(2);
+    if (step === 1 && selectedCompId) setStep(2);
     else if (step === 2 && date && time) setStep(3);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedCompId || !date || !time || blockedByVerification) return;
+    if (!selectedCompId || !date || !time) return;
     requestBooking(selectedCompId, new Date(`${date}T${time}:00`).toISOString(), hours, specialRequests);
     setSubmitSuccess(true); setSpecialRequests(""); setStep(4);
     setTimeout(() => setSubmitSuccess(false), 4000);
@@ -53,18 +47,12 @@ export default function Bookings() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "approved": return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-emerald-400 border border-emerald-500/20"><CheckCircle2 size={12} strokeWidth={1.5} />Approved</span>;
+      case "approved": return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-green-400 border border-green-500/20"><CheckCircle2 size={12} strokeWidth={1.5} />Approved</span>;
       case "declined": return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-red-400 border border-red-500/20"><XCircle size={12} strokeWidth={1.5} />Declined</span>;
       case "cancelled": return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#7A7870] border border-white/[0.07]">Cancelled</span>;
-      case "active": return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-emerald-400 border border-emerald-500/20"><LogIn size={12} strokeWidth={1.5} />Active</span>;
-      case "completed": return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#C9A84C] border border-[rgba(201,168,76,0.3)]"><CheckCircle2 size={12} strokeWidth={1.5} />Completed</span>;
-      case "distress": return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-rose-400 border border-rose-500/30"><ShieldAlert size={12} strokeWidth={1.5} />Distress</span>;
       default: return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-yellow-400 border border-yellow-500/20"><AlertCircle size={12} strokeWidth={1.5} />Pending</span>;
     }
   };
-
-  const canRate = (booking: typeof bookings[0]) =>
-    booking.status === "completed" && !useVelvetStore.getState().ratings.some(r => r.bookingId === booking.id && r.fromUserId === currentUser?.id);
 
   return (
     <div className="flex-1 flex flex-col bg-[#0E0E12] min-h-[calc(100vh-4rem)] p-5 md:p-8 relative overflow-hidden">
@@ -109,13 +97,7 @@ export default function Bookings() {
                       {activeCompanion.isVerified && <ShieldCheck size={16} strokeWidth={1.5} className="text-[#C9A84C]" />}
                     </div>
                   )}
-                  {blockedByVerification && (
-                    <div className="p-3 rounded-[18px] bg-[#22222E] border border-[rgba(245,158,11,0.3)] flex items-start gap-2">
-                      <ShieldAlert size={14} strokeWidth={1.5} className="text-yellow-400 shrink-0 mt-0.5" />
-                      <p className="text-[10px] text-yellow-400">This member requires verified clients. Verify your identity in Settings to continue.</p>
-                    </div>
-                  )}
-                  <button onClick={handleNextStep} disabled={!selectedCompId || blockedByVerification}
+                  <button onClick={handleNextStep} disabled={!selectedCompId}
                     className="w-full py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97] disabled:opacity-40">
                     Continue <ChevronRight size={14} strokeWidth={1.5} className="inline" />
                   </button>
@@ -165,19 +147,10 @@ export default function Bookings() {
                       <div className="border-t border-white/[0.07] pt-2 flex justify-between text-sm font-medium"><span className="text-[#7A7870]">Total</span><span className="text-[#C9A84C]">${calculatedTotal} USD</span></div>
                     </div>
                   )}
-
                   <div className="p-3 rounded-[18px] bg-[#22222E] border border-[rgba(201,168,76,0.2)] flex items-start gap-2">
                     <ShieldCheck size={14} strokeWidth={1.5} className="text-[#C9A84C] shrink-0 mt-0.5" />
-                    <p className="text-[10px] text-[#7A7870] leading-relaxed">Your booking is protected by our safety system. Check-in and share live location during your experience.</p>
+                    <p className="text-[10px] text-[#7A7870] leading-relaxed">Your booking is protected by our verification & safety system.</p>
                   </div>
-
-                  {currentUser?.verificationStatus === "unverified" && (
-                    <div className="p-3 rounded-[18px] bg-[#22222E] border border-yellow-500/20 flex items-start gap-2">
-                      <ShieldAlert size={14} strokeWidth={1.5} className="text-yellow-400 shrink-0 mt-0.5" />
-                      <p className="text-[10px] text-yellow-400">Some members require verified clients. Verify your ID in Settings for full access.</p>
-                    </div>
-                  )}
-
                   <div className="flex gap-2">
                     <button type="button" onClick={() => setStep(2)}
                       className="flex-1 py-3 border border-white/[0.2] text-[#F0EDE6] rounded-[100px] text-xs font-medium transition-all active:scale-[0.97]">Back</button>
@@ -208,44 +181,29 @@ export default function Bookings() {
                 const companion = companions.find(c => c.id === booking.companionId);
                 if (!companion) return null;
                 return (
-                  <GlassCard key={booking.id} className="p-5 flex flex-col gap-3">
-                    <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-                      <div className="flex items-center gap-3">
-                        <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-white/[0.07] shrink-0">
-                          <img src={companion.avatarUrl} alt="" className="w-full h-full object-cover" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium text-[#F0EDE6] flex items-center gap-1">{companion.displayName}{companion.isVerified && <CheckCircle2 size={13} strokeWidth={1.5} className="text-[#C9A84C]" />}</h4>
-                          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-[#7A7870] mt-0.5 uppercase tracking-[0.12em]">
-                            <span className="flex items-center gap-1"><CalendarIcon size={11} strokeWidth={1.5} />{new Date(booking.scheduledAt).toLocaleDateString()}</span>
-                            <span className="flex items-center gap-1"><Clock size={11} strokeWidth={1.5} />{new Date(booking.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({booking.durationHours}h)</span>
-                          </div>
-                        </div>
+                  <GlassCard key={booking.id} className="p-5 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                    <div className="flex items-center gap-3">
+                      <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-white/[0.07] shrink-0">
+                        <img src={companion.avatarUrl} alt="" className="w-full h-full object-cover" />
                       </div>
-                      <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto mt-2 md:mt-0 pt-3 md:pt-0 border-t md:border-t-0 border-white/[0.07]">
-                        <div className="text-xs font-medium text-[#F0EDE6] flex items-center"><DollarSign size={13} strokeWidth={1.5} />{booking.totalPrice} USD</div>
-                        <div className="mt-1 flex items-center gap-2">
-                          {getStatusBadge(booking.status)}
-                          {booking.status === "pending" && (
-                            <button onClick={() => updateBookingStatus(booking.id, "cancelled")}
-                              className="min-w-[48px] px-3 py-1 border border-white/[0.2] text-[#7A7870] hover:text-rose-400 rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all">Cancel</button>
-                          )}
+                      <div>
+                        <h4 className="text-sm font-medium text-[#F0EDE6] flex items-center gap-1">{companion.displayName}{companion.isVerified && <CheckCircle2 size={13} strokeWidth={1.5} className="text-[#C9A84C]" />}</h4>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-[#7A7870] mt-0.5 uppercase tracking-[0.12em]">
+                          <span className="flex items-center gap-1"><CalendarIcon size={11} strokeWidth={1.5} />{new Date(booking.scheduledAt).toLocaleDateString()}</span>
+                          <span className="flex items-center gap-1"><Clock size={11} strokeWidth={1.5} />{new Date(booking.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({booking.durationHours}h)</span>
                         </div>
                       </div>
                     </div>
-
-                    {(booking.status === "approved" || booking.status === "active" || booking.status === "distress") && (
-                      <CheckInCard booking={booking} />
-                    )}
-
-                    {canRate(booking) && (
-                      <div className="flex justify-end">
-                        <button onClick={() => setRatingBooking(booking)}
-                          className="px-4 py-2 bg-[#22222E] border border-[rgba(201,168,76,0.3)] text-[#C9A84C] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all active:scale-[0.97] flex items-center gap-1.5">
-                          <Star size={12} strokeWidth={1.5} />Rate Experience
-                        </button>
+                    <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto mt-2 md:mt-0 pt-3 md:pt-0 border-t md:border-t-0 border-white/[0.07]">
+                      <div className="text-xs font-medium text-[#F0EDE6] flex items-center"><DollarSign size={13} strokeWidth={1.5} />{booking.totalPrice} USD</div>
+                      <div className="mt-1 flex items-center gap-2">
+                        {getStatusBadge(booking.status)}
+                        {booking.status === "pending" && (
+                          <button onClick={() => updateBookingStatus(booking.id, "cancelled")}
+                            className="min-w-[48px] px-3 py-1 border border-white/[0.2] text-[#7A7870] hover:text-rose-400 rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all">Cancel</button>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </GlassCard>
                 );
               })
@@ -253,14 +211,6 @@ export default function Bookings() {
           </div>
         </div>
       </div>
-
-      {ratingBooking && (
-        <RatingModal
-          booking={ratingBooking}
-          companionName={companions.find(c => c.id === ratingBooking.companionId)?.displayName || ""}
-          onClose={() => setRatingBooking(null)}
-        />
-      )}
     </div>
   );
 }

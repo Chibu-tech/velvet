@@ -2,7 +2,7 @@
 
 import { useVelvetStore } from "@/store/useVelvetStore";
 import { useEffect, useState } from "react";
-import { X, MessageSquare, ShieldCheck, Calendar } from "lucide-react";
+import { X, MessageSquare, ShieldCheck, Calendar, ShieldAlert, Star, LogIn, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Toast() {
@@ -30,6 +30,14 @@ export function Toast() {
         return <ShieldCheck size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
       case "booking_request":
         return <Calendar size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
+      case "booking_active":
+        return <LogIn size={14} strokeWidth={1.5} className="text-emerald-400" />;
+      case "safety_alert":
+        return <ShieldAlert size={14} strokeWidth={1.5} className="text-rose-400" />;
+      case "panic":
+        return <AlertTriangle size={14} strokeWidth={1.5} className="text-rose-400" />;
+      case "rating":
+        return <Star size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
       default:
         return <MessageSquare size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
     }

@@ -24,6 +24,9 @@ export default function Chat() {
   const [inputText, setInputText] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [safetyWarning, setSafetyWarning] = useState<string | null>(null);
+  const safeWord = useVelvetStore((state) => state.currentUser?.safeWord);
+  const triggerPanicButton = useVelvetStore((state) => state.triggerPanicButton);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +56,22 @@ export default function Chat() {
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim() || !selectedConvId) return;
-    sendMessage(selectedConvId, inputText.trim());
+
+    const text = inputText.trim();
+
+    if (safeWord && text.toLowerCase().includes(safeWord.toLowerCase())) {
+      triggerPanicButton();
+      return;
+    }
+
+    const phoneRegex = /[\+]?[\d\s\-\(\)]{7,}/;
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    if (phoneRegex.test(text) || emailRegex.test(text)) {
+      setSafetyWarning("Be careful sharing personal contact info. Keep conversations on-platform for your safety.");
+      setTimeout(() => setSafetyWarning(null), 5000);
+    }
+
+    sendMessage(selectedConvId, text);
     setInputText("");
   };
 
@@ -163,6 +181,13 @@ export default function Chat() {
               <div ref={messagesEndRef} />
             </div>
 
+            {safetyWarning && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                className="mx-4 px-4 py-2.5 rounded-[12px] bg-yellow-500/10 border border-yellow-500/20 flex items-start gap-2">
+                <ShieldAlert size={14} strokeWidth={1.5} className="text-yellow-400 shrink-0 mt-0.5" />
+                <p className="text-[10px] text-yellow-400 leading-relaxed">{safetyWarning}</p>
+              </motion.div>
+            )}
             <div className="p-4 border-t border-white/[0.07] bg-[#0E0E12]/30 flex flex-col gap-3">
               <div className="flex gap-2">
                 {quickEmojis.map((emoji) => (
