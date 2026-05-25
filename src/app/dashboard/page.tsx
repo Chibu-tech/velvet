@@ -3,7 +3,8 @@
 import { useVelvetStore } from "@/store/useVelvetStore";
 import {
   Users, ShieldCheck, AlertTriangle, TrendingUp, Map,
-  Check, X, Ban, CheckCircle, Activity,
+  Check, X, Ban, CheckCircle, Activity, ShieldAlert,
+  MapPin, Clock,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 
@@ -12,10 +13,12 @@ export default function AdminDashboard() {
   const bookings = useVelvetStore((state) => state.bookings);
   const verificationRequests = useVelvetStore((state) => state.verificationRequests);
   const reportQueue = useVelvetStore((state) => state.reportQueue);
+  const distressAlerts = useVelvetStore((state) => state.distressAlerts);
   const approveVerification = useVelvetStore((state) => state.approveVerification);
   const rejectVerification = useVelvetStore((state) => state.rejectVerification);
   const resolveReport = useVelvetStore((state) => state.resolveReport);
   const banUser = useVelvetStore((state) => state.banUser);
+  const resolveDistress = useVelvetStore((state) => state.resolveDistress);
 
   const totalRevenue = bookings.reduce((sum, b) => sum + (b.totalPrice * 0.15), 0).toFixed(2);
   const activeUsers = companions.length + 42;
@@ -35,7 +38,7 @@ export default function AdminDashboard() {
           <h1 className="text-2xl font-display font-medium text-[#F0EDE6] flex items-center gap-2">
             Admin Dashboard<span className="text-[10px] bg-[#22222E] text-[#7A7870] border border-white/[0.07] px-2 py-0.5 rounded-[100px] uppercase tracking-[0.12em] font-medium">Operations</span>
           </h1>
-          <p className="text-[10px] text-[#7A7870] mt-1 uppercase tracking-[0.12em]">Verification, moderation, and platform analytics.</p>
+          <p className="text-[10px] text-[#7A7870] mt-1 uppercase tracking-[0.12em]">Verification, moderation, safety, and platform analytics.</p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -54,6 +57,41 @@ export default function AdminDashboard() {
             );
           })}
         </div>
+
+        {distressAlerts.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h2 className="text-lg font-display font-medium text-[#F0EDE6] flex items-center gap-2">
+              <ShieldAlert size={18} strokeWidth={1.5} className="text-rose-400" />
+              Distress Alerts
+              <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+            </h2>
+            <div className="flex flex-col gap-4">
+              {distressAlerts.map((alert) => (
+                <GlassCard key={alert.id} className="p-5 border-rose-500/30 bg-rose-600/5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-rose-500/30 shrink-0 ring-2 ring-rose-500/20">
+                      <img src={alert.avatarUrl} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-rose-400">@{alert.username}</h4>
+                      <div className="flex flex-col gap-0.5 mt-0.5 text-[10px] text-[#7A7870]">
+                        <span className="flex items-center gap-1"><Clock size={10} strokeWidth={1.5} />{new Date(alert.timestamp).toLocaleTimeString()}</span>
+                        <span className="flex items-center gap-1"><MapPin size={10} strokeWidth={1.5} />{alert.location}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-rose-500/10 pt-3 sm:pt-0">
+                    <span className="text-[9px] uppercase tracking-[0.12em] text-rose-400 font-medium bg-rose-500/10 px-2.5 py-1 rounded-[100px]">Booking {alert.bookingId}</span>
+                    <button onClick={() => resolveDistress(alert.id)}
+                      className="px-5 py-2 bg-emerald-600 text-white rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all active:scale-[0.97] flex items-center gap-1.5">
+                      <Check size={12} strokeWidth={1.5} />Resolve
+                    </button>
+                  </div>
+                </GlassCard>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-6 flex flex-col gap-4">

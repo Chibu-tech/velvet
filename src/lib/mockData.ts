@@ -9,6 +9,7 @@ export interface Profile {
   interests: string[];
   languages: string[];
   isVerified: boolean;
+  verificationStatus: "unverified" | "pending" | "verified";
   trustScore: number;
   responseRate: number;
   onlineStatus: boolean;
@@ -21,6 +22,7 @@ export interface Profile {
   categories: string[];
   rating: number;
   reviewsCount: number;
+  requireVerifiedClients: boolean;
 }
 
 export const MOCK_COMPANIONS: Profile[] = [
@@ -39,6 +41,7 @@ export const MOCK_COMPANIONS: Profile[] = [
     interests: ["Fine Dining", "Modern Art", "Jazz Clubs", "VIP Events", "Wine Vintages"],
     languages: ["English", "French", "Italian"],
     isVerified: true,
+    verificationStatus: "verified",
     trustScore: 98,
     responseRate: 100,
     onlineStatus: true,
@@ -50,7 +53,8 @@ export const MOCK_COMPANIONS: Profile[] = [
     availabilityStatus: "available",
     categories: ["Nightlife Hosting", "Social Meetups", "Creator Bookings"],
     rating: 4.9,
-    reviewsCount: 34
+    reviewsCount: 34,
+    requireVerifiedClients: false
   },
   {
     id: "comp-2",
@@ -66,6 +70,7 @@ export const MOCK_COMPANIONS: Profile[] = [
     interests: ["Classical Piano", "Yachting", "Luxury Watches", "Gala Events"],
     languages: ["English", "German", "Russian"],
     isVerified: true,
+    verificationStatus: "verified",
     trustScore: 100,
     responseRate: 95,
     onlineStatus: true,
@@ -77,7 +82,8 @@ export const MOCK_COMPANIONS: Profile[] = [
     availabilityStatus: "available",
     categories: ["Corporate Networking", "Social Meetups"],
     rating: 5.0,
-    reviewsCount: 18
+    reviewsCount: 18,
+    requireVerifiedClients: true
   },
   {
     id: "comp-3",
@@ -93,6 +99,7 @@ export const MOCK_COMPANIONS: Profile[] = [
     interests: ["Haute Couture", "Polo Matches", "Contemporary Dance", "Archipelago Travel"],
     languages: ["English", "Spanish", "Portuguese"],
     isVerified: true,
+    verificationStatus: "verified",
     trustScore: 97,
     responseRate: 98,
     onlineStatus: false,
@@ -104,7 +111,8 @@ export const MOCK_COMPANIONS: Profile[] = [
     availabilityStatus: "busy",
     categories: ["Nightlife Hosting", "Creator Bookings"],
     rating: 4.8,
-    reviewsCount: 29
+    reviewsCount: 29,
+    requireVerifiedClients: false
   },
   {
     id: "comp-4",
@@ -120,6 +128,7 @@ export const MOCK_COMPANIONS: Profile[] = [
     interests: ["Wine Sommelier", "Golfing", "Supercars", "Venture Capital"],
     languages: ["English", "Mandarin"],
     isVerified: false,
+    verificationStatus: "unverified",
     trustScore: 92,
     responseRate: 92,
     onlineStatus: true,
@@ -131,7 +140,8 @@ export const MOCK_COMPANIONS: Profile[] = [
     availabilityStatus: "available",
     categories: ["Corporate Networking", "Companionship"],
     rating: 4.7,
-    reviewsCount: 12
+    reviewsCount: 12,
+    requireVerifiedClients: false
   }
 ];
 
@@ -229,13 +239,55 @@ export interface Booking {
   id: string;
   customerId: string;
   companionId: string;
-  status: "pending" | "approved" | "declined" | "cancelled" | "completed";
+  status: "pending" | "approved" | "declined" | "cancelled" | "active" | "completed" | "distress";
   scheduledAt: string;
   durationHours: number;
   totalPrice: number;
   currency: string;
   specialRequests?: string;
+  checkedInAt?: string;
+  checkedOutAt?: string;
   createdAt: string;
+}
+
+export interface EmergencyContact {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  relationship: string;
+}
+
+export interface SafetyCheckin {
+  bookingId: string;
+  checkedInAt: string;
+  checkedOutAt?: string;
+  safeWordTriggered: boolean;
+}
+
+export interface SafetyEvent {
+  id: string;
+  userId: string;
+  type: "checkin" | "checkout" | "safe_word" | "panic" | "distress";
+  bookingId?: string;
+  timestamp: string;
+}
+
+export interface Rating {
+  id: string;
+  bookingId: string;
+  fromUserId: string;
+  toUserId: string;
+  score: number;
+  review?: string;
+  createdAt: string;
+}
+
+export interface LiveLocationState {
+  bookingId: string;
+  isActive: boolean;
+  sharedWithIds: string[];
+  updatedAt: string;
 }
 
 export const MOCK_BOOKINGS: Booking[] = [
@@ -244,7 +296,7 @@ export const MOCK_BOOKINGS: Booking[] = [
     customerId: "user-1",
     companionId: "comp-1",
     status: "approved",
-    scheduledAt: "2026-05-23T19:00:00Z",
+    scheduledAt: new Date(Date.now() - 3600000).toISOString(),
     durationHours: 4,
     totalPrice: 600,
     currency: "USD",
@@ -262,6 +314,58 @@ export const MOCK_BOOKINGS: Booking[] = [
     currency: "USD",
     specialRequests: "Private polo match escort. Casual premium outfits.",
     createdAt: "2026-05-21T12:30:00Z"
+  },
+  {
+    id: "book-3",
+    customerId: "user-1",
+    companionId: "comp-4",
+    status: "active",
+    scheduledAt: new Date(Date.now() - 7200000).toISOString(),
+    durationHours: 3,
+    totalPrice: 750,
+    currency: "USD",
+    specialRequests: "Wine tasting event.",
+    checkedInAt: new Date(Date.now() - 3600000).toISOString(),
+    createdAt: "2026-05-22T09:00:00Z"
+  }
+];
+
+export const MOCK_EMERGENCY_CONTACTS: EmergencyContact[] = [
+  {
+    id: "ec-1",
+    name: "Sarah Mitchell",
+    phone: "+1 (555) 123-4567",
+    email: "sarah@example.com",
+    relationship: "Sister"
+  },
+  {
+    id: "ec-2",
+    name: "James Walker",
+    phone: "+1 (555) 987-6543",
+    email: "james@example.com",
+    relationship: "Friend"
+  }
+];
+
+export const MOCK_SAFETY_EVENTS: SafetyEvent[] = [
+  {
+    id: "sev-1",
+    userId: "user-1",
+    type: "checkin",
+    bookingId: "book-3",
+    timestamp: new Date(Date.now() - 3600000).toISOString()
+  }
+];
+
+export const MOCK_RATINGS: Rating[] = [
+  {
+    id: "rat-1",
+    bookingId: "book-1",
+    fromUserId: "user-1",
+    toUserId: "comp-1",
+    score: 5,
+    review: "An absolutely unforgettable evening. Seraphina is elegance personified.",
+    createdAt: "2026-05-24T12:00:00Z"
   }
 ];
 
@@ -269,7 +373,7 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: "message" | "booking_request" | "booking_approved" | "boost_expires";
+  type: "message" | "booking_request" | "booking_approved" | "boost_expires" | "safety_alert" | "rating" | "booking_active" | "panic";
   referenceId: string;
   isRead: boolean;
   createdAt: string;

@@ -6,14 +6,20 @@ import {
   MOCK_MESSAGES, 
   MOCK_BOOKINGS, 
   MOCK_NOTIFICATIONS, 
+  MOCK_EMERGENCY_CONTACTS,
+  MOCK_SAFETY_EVENTS,
+  MOCK_RATINGS,
   Conversation, 
   ChatMessage, 
   Booking, 
-  Notification 
+  Notification,
+  EmergencyContact,
+  SafetyEvent,
+  Rating,
+  LiveLocationState,
 } from "@/lib/mockData";
 
 interface VelvetState {
-  // Auth State
   currentUser: {
     id: string;
     username: string;
@@ -23,20 +29,23 @@ interface VelvetState {
     onboarded: boolean;
     tier: "free" | "gold" | "platinum";
     credits: number;
+    verificationStatus: "unverified" | "pending" | "verified";
+    safeWord: string;
+    requireVerifiedClients: boolean;
   } | null;
   ageConfirmed: boolean;
-  
-  // App Core Lists
+
   companions: Profile[];
   conversations: Conversation[];
   messages: Record<string, ChatMessage[]>;
   bookings: Booking[];
   notifications: Notification[];
-  
-  // Blocked users
   blockedUserIds: string[];
+  emergencyContacts: EmergencyContact[];
+  safetyEvents: SafetyEvent[];
+  ratings: Rating[];
+  liveLocationSharing: LiveLocationState | null;
 
-  // Moderation / Verification Queues (for Admin Dashboard)
   verificationRequests: Array<{
     id: string;
     username: string;
@@ -52,54 +61,73 @@ interface VelvetState {
     details: string;
     createdAt: string;
   }>;
+  distressAlerts: Array<{
+    id: string;
+    userId: string;
+    username: string;
+    avatarUrl: string;
+    bookingId: string;
+    timestamp: string;
+    location: string;
+  }>;
 
-  // Search & Filtering Settings
   searchQuery: string;
   radiusKm: number;
   filterVerifiedOnly: boolean;
   filterOnlineOnly: boolean;
   selectedCategory: string;
 
-  // Actions
   setAgeConfirmed: (val: boolean) => void;
   setCurrentUser: (user: VelvetState["currentUser"]) => void;
   updateUserOnboarding: (data: Partial<VelvetState["currentUser"]>) => void;
   switchRole: (role: "customer" | "companion" | "admin") => void;
-  
-  // Discover Page Swipe Feed Filters
+
   setSearchQuery: (val: string) => void;
   setRadiusKm: (val: number) => void;
   setFilterVerifiedOnly: (val: boolean) => void;
   setFilterOnlineOnly: (val: boolean) => void;
   setSelectedCategory: (val: string) => void;
 
-  // Messaging Actions
   sendMessage: (convId: string, text: string) => void;
   createConversation: (companionId: string) => string;
   markNotificationsAsRead: () => void;
 
-  // Booking Actions
   requestBooking: (companionId: string, scheduledAt: string, hours: number, requests: string) => void;
   updateBookingStatus: (bookingId: string, status: Booking["status"]) => void;
-  
-  // Subscriptions & Monetization
+
   upgradeSubscription: (tier: "gold" | "platinum") => void;
   buyCredits: (amount: number) => void;
   boostProfile: () => void;
 
-  // Safety Actions
   reportUser: (reportedId: string, reason: string) => void;
   blockUser: (blockedId: string) => void;
 
-  // Admin Dashboard Actions
   approveVerification: (reqId: string) => void;
   rejectVerification: (reqId: string) => void;
   resolveReport: (reportId: string) => void;
   banUser: (username: string) => void;
+  resolveDistress: (alertId: string) => void;
+
+  checkInToBooking: (bookingId: string) => void;
+  checkOutOfBooking: (bookingId: string) => void;
+  triggerSafeWord: (bookingId: string) => void;
+
+  addEmergencyContact: (contact: Omit<EmergencyContact, "id">) => void;
+  removeEmergencyContact: (id: string) => void;
+  updateSafeWord: (word: string) => void;
+
+  startLocationSharing: (bookingId: string) => void;
+  stopLocationSharing: () => void;
+
+  triggerPanicButton: () => void;
+
+  submitRating: (bookingId: string, toUserId: string, score: number, review?: string) => void;
+  getPendingRatings: () => Booking[];
+  getCompletenessScore: (userId?: string) => number;
+  setRequireVerifiedClients: (val: boolean) => void;
 }
 
 export const useVelvetStore = create<VelvetState>((set, get) => ({
-  // Active session details
   currentUser: {
     id: "user-1",
     username: "vip_guest",
@@ -109,6 +137,9 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
     onboarded: true,
     tier: "free",
     credits: 50,
+    verificationStatus: "unverified",
+    safeWord: "",
+    requireVerifiedClients: false,
   },
   ageConfirmed: false,
 
@@ -117,10 +148,12 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
   messages: MOCK_MESSAGES,
   bookings: MOCK_BOOKINGS,
   notifications: MOCK_NOTIFICATIONS,
-
   blockedUserIds: [],
+  emergencyContacts: MOCK_EMERGENCY_CONTACTS,
+  safetyEvents: MOCK_SAFETY_EVENTS,
+  ratings: MOCK_RATINGS,
+  liveLocationSharing: null,
 
-  // Admin dashboards queues
   verificationRequests: [
     {
       id: "v-req-1",
@@ -147,8 +180,8 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
       createdAt: "2026-05-21T08:30:00Z"
     }
   ],
+  distressAlerts: [],
 
-  // Feeds filtering configurations
   searchQuery: "",
   radiusKm: 25,
   filterVerifiedOnly: false,
@@ -182,18 +215,14 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
 
     set((state) => {
       const convMessages = state.messages[convId] || [];
-      const updatedMessages = [...convMessages, newMessage];
-      const updatedConversations = state.conversations.map((c) => 
-        c.id === convId ? { ...c, lastMessage: text, updatedAt: new Date().toISOString() } : c
-      );
-
       return {
-        messages: { ...state.messages, [convId]: updatedMessages },
-        conversations: updatedConversations
+        messages: { ...state.messages, [convId]: [...convMessages, newMessage] },
+        conversations: state.conversations.map((c) => 
+          c.id === convId ? { ...c, lastMessage: text, updatedAt: new Date().toISOString() } : c
+        ),
       };
     });
 
-    // Simulated "Typing Presence" Response from Host to show realtime premium feel!
     setTimeout(() => {
       const activeConv = get().conversations.find(c => c.id === convId);
       if (!activeConv) return;
@@ -210,24 +239,20 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
 
       set((state) => {
         const convMessages = state.messages[convId] || [];
-        const updatedMessages = [...convMessages, hostReply];
-        const updatedConversations = state.conversations.map((c) => 
-          c.id === convId ? { ...c, lastMessage: hostReply.content, updatedAt: new Date().toISOString(), unreadCount: c.unreadCount + 1 } : c
-        );
-        const newNotif: Notification = {
-          id: `not-${Date.now()}`,
-          title: `Message from ${companion.displayName}`,
-          message: hostReply.content,
-          type: "message",
-          referenceId: convId,
-          isRead: false,
-          createdAt: new Date().toISOString()
-        };
-
         return {
-          messages: { ...state.messages, [convId]: updatedMessages },
-          conversations: updatedConversations,
-          notifications: [newNotif, ...state.notifications]
+          messages: { ...state.messages, [convId]: [...convMessages, hostReply] },
+          conversations: state.conversations.map((c) => 
+            c.id === convId ? { ...c, lastMessage: hostReply.content, updatedAt: new Date().toISOString(), unreadCount: c.unreadCount + 1 } : c
+          ),
+          notifications: [{
+            id: `not-${Date.now()}`,
+            title: `Message from ${companion.displayName}`,
+            message: hostReply.content,
+            type: "message",
+            referenceId: convId,
+            isRead: false,
+            createdAt: new Date().toISOString()
+          }, ...state.notifications]
         };
       });
     }, 2500);
@@ -286,6 +311,11 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
     const companion = get().companions.find(c => c.id === companionId);
     if (!companion) return;
 
+    const user = get().currentUser;
+    if (companion.requireVerifiedClients && user?.verificationStatus !== "verified") {
+      return;
+    }
+
     const totalPrice = companion.pricingHourly * hours;
     const newBooking: Booking = {
       id: `book-${Date.now()}`,
@@ -304,21 +334,19 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
       bookings: [newBooking, ...state.bookings]
     }));
 
-    // Auto-approve after 4 seconds to show functional flow!
     setTimeout(() => {
       get().updateBookingStatus(newBooking.id, "approved");
-      
-      const newNotif: Notification = {
-        id: `not-bk-${Date.now()}`,
-        title: "Booking Confirmed",
-        message: `${companion.displayName} accepted your companions booking request for ${new Date(scheduledAt).toLocaleDateString()}.`,
-        type: "booking_approved",
-        referenceId: newBooking.id,
-        isRead: false,
-        createdAt: new Date().toISOString()
-      };
+
       set((state) => ({
-        notifications: [newNotif, ...state.notifications]
+        notifications: [{
+          id: `not-bk-${Date.now()}`,
+          title: "Booking Confirmed",
+          message: `${companion.displayName} accepted your companions booking request for ${new Date(scheduledAt).toLocaleDateString()}.`,
+          type: "booking_approved",
+          referenceId: newBooking.id,
+          isRead: false,
+          createdAt: new Date().toISOString()
+        }, ...state.notifications]
       }));
     }, 4000);
   },
@@ -344,22 +372,19 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
   boostProfile: () => {
     set((state) => {
       if (!state.currentUser || state.currentUser.credits < 20) return {};
-      
-      // Deduct credits and simulate boost activation
       return {
         currentUser: { ...state.currentUser, credits: state.currentUser.credits - 20 }
       };
     });
   },
 
-  // Admin Dashboard Actions
   approveVerification: (reqId) => {
     const request = get().verificationRequests.find(r => r.id === reqId);
     if (!request) return;
 
     set((state) => ({
       verificationRequests: state.verificationRequests.filter(r => r.id !== reqId),
-      companions: state.companions.map(c => c.username === request.username ? { ...c, isVerified: true } : c)
+      companions: state.companions.map(c => c.username === request.username ? { ...c, isVerified: true, verificationStatus: "verified" } : c)
     }));
   },
 
@@ -379,5 +404,234 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
     set((state) => ({
       companions: state.companions.filter(c => c.username !== username)
     }));
-  }
+  },
+
+  resolveDistress: (alertId) => {
+    set((state) => ({
+      distressAlerts: state.distressAlerts.filter(a => a.id !== alertId)
+    }));
+  },
+
+  checkInToBooking: (bookingId) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      bookings: state.bookings.map((b) =>
+        b.id === bookingId ? { ...b, status: "active", checkedInAt: now } : b
+      ),
+      safetyEvents: [...state.safetyEvents, {
+        id: `sev-${Date.now()}`,
+        userId: state.currentUser?.id || "",
+        type: "checkin",
+        bookingId,
+        timestamp: now
+      }],
+      notifications: [{
+        id: `not-${Date.now()}`,
+        title: "Checked In",
+        message: "You have checked in. Your trusted contacts have been notified. Stay safe.",
+        type: "booking_active",
+        referenceId: bookingId,
+        isRead: false,
+        createdAt: now
+      }, ...state.notifications]
+    }));
+  },
+
+  checkOutOfBooking: (bookingId) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      bookings: state.bookings.map((b) =>
+        b.id === bookingId ? { ...b, status: "completed", checkedOutAt: now } : b
+      ),
+      safetyEvents: [...state.safetyEvents, {
+        id: `sev-${Date.now()}`,
+        userId: state.currentUser?.id || "",
+        type: "checkout",
+        bookingId,
+        timestamp: now
+      }],
+      liveLocationSharing: state.liveLocationSharing?.bookingId === bookingId ? null : state.liveLocationSharing,
+      notifications: [{
+        id: `not-${Date.now()}`,
+        title: "Checked Out",
+        message: "You have checked out. Your trusted contacts have been notified that you're safe.",
+        type: "safety_alert",
+        referenceId: bookingId,
+        isRead: false,
+        createdAt: now
+      }, ...state.notifications]
+    }));
+  },
+
+  triggerSafeWord: (bookingId) => {
+    const now = new Date().toISOString();
+    const booking = get().bookings.find(b => b.id === bookingId);
+    if (!booking) return;
+
+    set((state) => ({
+      bookings: state.bookings.map((b) =>
+        b.id === bookingId ? { ...b, status: "distress" } : b
+      ),
+      safetyEvents: [...state.safetyEvents, {
+        id: `sev-${Date.now()}`,
+        userId: state.currentUser?.id || "",
+        type: "safe_word",
+        bookingId,
+        timestamp: now
+      }],
+      distressAlerts: [...state.distressAlerts, {
+        id: `da-${Date.now()}`,
+        userId: state.currentUser?.id || "",
+        username: state.currentUser?.username || "unknown",
+        avatarUrl: state.currentUser?.avatarUrl || "",
+        bookingId,
+        timestamp: now,
+        location: "Last known: 40.7580° N, 73.9855° W (New York, NY)"
+      }],
+      notifications: [{
+        id: `not-${Date.now()}`,
+        title: "Safe Word Triggered",
+        message: "Your safe word has been detected. Emergency contacts and admin have been notified.",
+        type: "safety_alert",
+        referenceId: bookingId,
+        isRead: false,
+        createdAt: now
+      }, ...state.notifications]
+    }));
+  },
+
+  addEmergencyContact: (contact) => {
+    const newContact: EmergencyContact = {
+      id: `ec-${Date.now()}`,
+      ...contact
+    };
+    set((state) => ({
+      emergencyContacts: [...state.emergencyContacts, newContact]
+    }));
+  },
+
+  removeEmergencyContact: (id) => {
+    set((state) => ({
+      emergencyContacts: state.emergencyContacts.filter(c => c.id !== id)
+    }));
+  },
+
+  updateSafeWord: (word) => {
+    set((state) => ({
+      currentUser: state.currentUser ? { ...state.currentUser, safeWord: word } : null
+    }));
+  },
+
+  startLocationSharing: (bookingId) => {
+    set({
+      liveLocationSharing: {
+        bookingId,
+        isActive: true,
+        sharedWithIds: get().emergencyContacts.map(c => c.id),
+        updatedAt: new Date().toISOString()
+      }
+    });
+  },
+
+  stopLocationSharing: () => {
+    set({ liveLocationSharing: null });
+  },
+
+  triggerPanicButton: () => {
+    const now = new Date().toISOString();
+    const activeBooking = get().bookings.find(b => b.status === "active" || b.status === "approved");
+
+    if (activeBooking) {
+      set((state) => ({
+        bookings: state.bookings.map((b) =>
+          b.id === activeBooking.id ? { ...b, status: "distress" } : b
+        ),
+      }));
+    }
+
+    set((state) => ({
+      safetyEvents: [...state.safetyEvents, {
+        id: `sev-${Date.now()}`,
+        userId: state.currentUser?.id || "",
+        type: "panic",
+        bookingId: activeBooking?.id,
+        timestamp: now
+      }],
+      distressAlerts: [...state.distressAlerts, {
+        id: `da-${Date.now()}`,
+        userId: state.currentUser?.id || "",
+        username: state.currentUser?.username || "unknown",
+        avatarUrl: state.currentUser?.avatarUrl || "",
+        bookingId: activeBooking?.id || "none",
+        timestamp: now,
+        location: "Last known: 40.7580° N, 73.9855° W (New York, NY)"
+      }],
+      notifications: [{
+        id: `not-${Date.now()}`,
+        title: "Panic Alert Sent",
+        message: "Your emergency alert has been sent. Admin and your trusted contacts have been notified.",
+        type: "panic",
+        referenceId: activeBooking?.id || "none",
+        isRead: false,
+        createdAt: now
+      }, ...state.notifications]
+    }));
+  },
+
+  submitRating: (bookingId, toUserId, score, review) => {
+    const newRating: Rating = {
+      id: `rat-${Date.now()}`,
+      bookingId,
+      fromUserId: get().currentUser?.id || "",
+      toUserId,
+      score,
+      review,
+      createdAt: new Date().toISOString()
+    };
+
+    set((state) => ({
+      ratings: [...state.ratings, newRating],
+      companions: state.companions.map((c) => {
+        if (c.id !== toUserId) return c;
+        const userRatings = [...state.ratings, newRating].filter(r => r.toUserId === c.id);
+        const avgRating = userRatings.reduce((sum, r) => sum + r.score, 0) / userRatings.length;
+        return { ...c, rating: Math.round(avgRating * 10) / 10, reviewsCount: userRatings.length };
+      })
+    }));
+  },
+
+  getPendingRatings: () => {
+    return get().bookings.filter(b =>
+      b.status === "completed" &&
+      !get().ratings.some(r => r.bookingId === b.id && r.fromUserId === get().currentUser?.id)
+    );
+  },
+
+  getCompletenessScore: () => {
+    const user = get().currentUser;
+    if (!user) return 0;
+    let score = 0;
+    if (user.verificationStatus === "verified") score += 20;
+    else if (user.verificationStatus === "pending") score += 5;
+    const companion = get().companions.find(c => c.id === user.id);
+    const p = companion || null;
+    if (p?.bio && p.bio.length >= 50) score += 10;
+    else if (p?.bio) score += 5;
+    if ((p?.images?.length || 0) >= 3) score += 10;
+    else if ((p?.images?.length || 0) > 0) score += 5;
+    if ((p?.interests?.length || 0) >= 1) score += 5;
+    if (user.safeWord) score += 10;
+    if (get().emergencyContacts.length > 0) score += 10;
+    if (p?.pricingHourly && p.pricingHourly > 0) score += 10;
+    if (p?.availabilityStatus) score += 5;
+    if (p?.displayName && p.displayName.length > 2) score += 5;
+    if (user.onboarded) score += 10;
+    return Math.min(score, 100);
+  },
+
+  setRequireVerifiedClients: (val) => {
+    set((state) => ({
+      currentUser: state.currentUser ? { ...state.currentUser, requireVerifiedClients: val } : null
+    }));
+  },
 }));

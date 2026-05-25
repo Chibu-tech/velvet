@@ -12,6 +12,7 @@ import {
   Gift,
 } from "lucide-react";
 import { useVelvetStore } from "@/store/useVelvetStore";
+import { PanicButton } from "./PanicButton";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -124,6 +125,8 @@ export function Navigation() {
           </Link>
         </div>
       </header>
+
+      <PanicButton />
     </>
   );
 }

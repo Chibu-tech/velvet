@@ -29,7 +29,8 @@ export default function Auth() {
     setCurrentUser({
       id: "user-1", username: email.split("@")[0] || "velvet_user", displayName: "Guest Member",
       role: "customer", avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100",
-      onboarded: false, tier: "free", credits: 50
+      onboarded: false, tier: "free", credits: 50,
+      verificationStatus: "unverified", safeWord: "", requireVerifiedClients: false,
     });
     router.push("/onboarding");
   };
@@ -41,7 +42,8 @@ export default function Auth() {
     setCurrentUser({
       id: `user-${Date.now()}`, username: email.split("@")[0] || "member", displayName: "New Member",
       role: role, avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100",
-      onboarded: false, tier: "free", credits: 50
+      onboarded: false, tier: "free", credits: 50,
+      verificationStatus: "unverified", safeWord: "", requireVerifiedClients: false,
     });
     router.push("/onboarding");
   };
@@ -58,7 +60,8 @@ export default function Auth() {
     setCurrentUser({
       id: "user-1", username: "phone_guest", displayName: "Julian Sterling",
       role: "customer", avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100",
-      onboarded: true, tier: "free", credits: 50
+      onboarded: true, tier: "free", credits: 50,
+      verificationStatus: "unverified", safeWord: "", requireVerifiedClients: false,
     });
     router.push("/discover");
   };

@@ -10,7 +10,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 2. ENUMERATION TYPES
 CREATE TYPE user_role AS ENUM ('customer', 'companion', 'admin');
-CREATE TYPE booking_status AS ENUM ('pending', 'approved', 'declined', 'cancelled', 'completed');
+CREATE TYPE booking_status AS ENUM ('pending', 'approved', 'declined', 'cancelled', 'active', 'completed', 'distress');
 CREATE TYPE subscription_tier AS ENUM ('free', 'gold', 'platinum');
 
 -- 3. PROFILES AND USERS TABLE
@@ -41,6 +41,9 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     pricing_daily DECIMAL CHECK (pricing_daily >= 0),
     pricing_currency VARCHAR(10) DEFAULT 'USD',
     availability_status VARCHAR(100) DEFAULT 'available', -- e.g. "available", "busy", "away"
+    require_verified_clients BOOLEAN DEFAULT FALSE NOT NULL,
+    safe_word VARCHAR(100),
+    verification_status VARCHAR(50) DEFAULT 'unverified' NOT NULL, -- unverified, pending, verified
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -78,6 +81,8 @@ CREATE TABLE IF NOT EXISTS public.bookings (
     total_price DECIMAL NOT NULL,
     currency VARCHAR(10) DEFAULT 'USD',
     special_requests TEXT,
+    checked_in_at TIMESTAMP WITH TIME ZONE,
+    checked_out_at TIMESTAMP WITH TIME ZONE,
     cancellation_reason TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
@@ -115,6 +120,65 @@ CREATE TABLE IF NOT EXISTS public.boosts (
     credits_cost INT NOT NULL
 );
 
+-- 8b. EMERGENCY CONTACTS
+CREATE TABLE IF NOT EXISTS public.emergency_contacts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    email VARCHAR(255),
+    relationship VARCHAR(100),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 8c. SAFETY CHECK-INS
+CREATE TABLE IF NOT EXISTS public.safety_checkins (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    booking_id UUID REFERENCES public.bookings(id) ON DELETE CASCADE NOT NULL,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    checked_in_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    checked_out_at TIMESTAMP WITH TIME ZONE,
+    safe_word_triggered BOOLEAN DEFAULT FALSE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    CONSTRAINT unique_booking_checkin UNIQUE (booking_id, user_id)
+);
+
+-- 8d. SAFETY EVENTS (Check-in, check-out, safe word, panic)
+CREATE TABLE IF NOT EXISTS public.safety_events (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    type VARCHAR(50) NOT NULL, -- checkin, checkout, safe_word, panic, distress
+    booking_id UUID REFERENCES public.bookings(id) ON DELETE SET NULL,
+    location_lat DOUBLE PRECISION,
+    location_lng DOUBLE PRECISION,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 8e. DISTRESS ALERTS
+CREATE TABLE IF NOT EXISTS public.distress_alerts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    booking_id UUID REFERENCES public.bookings(id) ON DELETE SET NULL,
+    alert_type VARCHAR(50) NOT NULL, -- panic, safe_word, missed_checkout
+    location_lat DOUBLE PRECISION,
+    location_lng DOUBLE PRECISION,
+    status VARCHAR(50) DEFAULT 'active' NOT NULL, -- active, resolved
+    resolved_by UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    resolved_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 8f. LIVE LOCATION SHARING SESSIONS
+CREATE TABLE IF NOT EXISTS public.location_shares (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    booking_id UUID REFERENCES public.bookings(id) ON DELETE CASCADE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    shared_with UUID[] DEFAULT '{}',
+    started_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    ended_at TIMESTAMP WITH TIME ZONE
+);
+
 -- 9. TRUST, SAFETY AND REPORTS
 CREATE TABLE IF NOT EXISTS public.reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -142,7 +206,7 @@ CREATE TABLE IF NOT EXISTS public.notifications (
     user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
     title VARCHAR(150) NOT NULL,
     message TEXT NOT NULL,
-    type VARCHAR(50) NOT NULL, -- message, booking_request, booking_approved, boost_expires
+    type VARCHAR(50) NOT NULL, -- message, booking_request, booking_approved, boost_expires, safety_alert, rating, booking_active, panic
     reference_id UUID,
     is_read BOOLEAN DEFAULT FALSE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -158,6 +222,91 @@ CREATE TABLE IF NOT EXISTS public.verification_requests (
     rejection_reason TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Enable RLS on new safety tables
+ALTER TABLE public.emergency_contacts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.safety_checkins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.safety_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.distress_alerts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.location_shares ENABLE ROW LEVEL SECURITY;
+
+-- Emergency Contacts Policies
+CREATE POLICY "Users can view their own emergency contacts"
+    ON public.emergency_contacts FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can manage their own emergency contacts"
+    ON public.emergency_contacts FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own emergency contacts"
+    ON public.emergency_contacts FOR UPDATE
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own emergency contacts"
+    ON public.emergency_contacts FOR DELETE
+    USING (auth.uid() = user_id);
+
+-- Safety Check-ins Policies
+CREATE POLICY "Users can view check-ins for their bookings"
+    ON public.safety_checkins FOR SELECT
+    USING (EXISTS (
+        SELECT 1 FROM public.bookings
+        WHERE bookings.id = safety_checkins.booking_id
+        AND (bookings.customer_id = auth.uid() OR bookings.companion_id = auth.uid())
+    ));
+
+CREATE POLICY "Users can create check-ins for their bookings"
+    ON public.safety_checkins FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+-- Safety Events Policies
+CREATE POLICY "Users can view their own safety events"
+    ON public.safety_events FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Admins can view all safety events"
+    ON public.safety_events FOR SELECT
+    USING (EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+    ));
+
+CREATE POLICY "Users can create safety events"
+    ON public.safety_events FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+-- Distress Alerts Policies
+CREATE POLICY "Users can view their own distress alerts"
+    ON public.distress_alerts FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Admins can view all distress alerts"
+    ON public.distress_alerts FOR SELECT
+    USING (EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+    ));
+
+CREATE POLICY "Admins can resolve distress alerts"
+    ON public.distress_alerts FOR UPDATE
+    USING (EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+    ));
+
+-- Location Shares Policies
+CREATE POLICY "Users can view their own location shares"
+    ON public.location_shares FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can manage their own location shares"
+    ON public.location_shares FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own location shares"
+    ON public.location_shares FOR UPDATE
+    USING (auth.uid() = user_id);
 
 -- ==========================================
 -- INDEXES & PERFORMANCE OPTIMIZATIONS

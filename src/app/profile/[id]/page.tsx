@@ -10,6 +10,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useVelvetStore } from "@/store/useVelvetStore";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { RatingModal } from "@/components/ui/RatingModal";
 
 export default function ProfileDetails({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -23,6 +24,12 @@ export default function ProfileDetails({ params }: { params: Promise<{ id: strin
   const [reportReason, setReportReason] = useState("");
   const [actionDone, setActionDone] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+
+  const ratings = useVelvetStore((state) => state.ratings);
+  const companionRatings = ratings.filter(r => r.toUserId === id);
+  const currentUserId = useVelvetStore((state) => state.currentUser?.id);
+  const hasRated = companionRatings.some(r => r.fromUserId === currentUserId);
 
   const companion = companions.find((c) => c.id === id);
 
@@ -172,8 +179,48 @@ export default function ProfileDetails({ params }: { params: Promise<{ id: strin
               <span className="flex items-center gap-1.5 px-3 py-1.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#C9A84C] border border-[rgba(201,168,76,0.3)]"><Star size={12} strokeWidth={1.5} />{companion.reviewsCount} Reviews</span>
             </div>
           </GlassCard>
+
+          {companionRatings.length > 0 && (
+            <GlassCard className="p-6">
+              <h3 className="font-display font-medium text-[#F0EDE6] mb-4 flex items-center gap-2"><Star size={16} strokeWidth={1.5} className="text-[#C9A84C]" />Reviews</h3>
+              <div className="flex flex-col gap-3 max-h-48 overflow-y-auto">
+                {companionRatings.map((r) => (
+                  <div key={r.id} className="p-3 rounded-[18px] bg-[#22222E] border border-white/[0.07]">
+                    <div className="flex items-center gap-1 mb-1">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} size={10} strokeWidth={1.5} fill={s <= r.score ? "#C9A84C" : "transparent"} className={s <= r.score ? "text-[#C9A84C]" : "text-[#4A4845]"} />
+                      ))}
+                    </div>
+                    {r.review && <p className="text-xs text-[#7A7870]">{r.review}</p>}
+                  </div>
+                ))}
+              </div>
+              {!hasRated && (
+                <button onClick={() => setShowRatingModal(true)}
+                  className="mt-3 px-5 py-2 border border-[rgba(201,168,76,0.3)] text-[#C9A84C] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all active:scale-[0.97]">Rate {companion.displayName}</button>
+              )}
+            </GlassCard>
+          )}
         </div>
       </div>
+
+      {showRatingModal && (
+        <RatingModal
+          booking={{
+            id: `rating-${companion.id}`,
+            customerId: currentUserId || "",
+            companionId: companion.id,
+            status: "completed",
+            scheduledAt: new Date().toISOString(),
+            durationHours: 0,
+            totalPrice: 0,
+            currency: "USD",
+            createdAt: new Date().toISOString(),
+          }}
+          companionName={companion.displayName}
+          onClose={() => setShowRatingModal(false)}
+        />
+      )}
 
       <AnimatePresence>
         {safetyAction && (
