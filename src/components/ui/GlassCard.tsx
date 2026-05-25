@@ -16,10 +16,10 @@ export function GlassCard({ children, className = "", glow = false, onClick }: G
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") onClick(); } : undefined}
-      className={`rounded-2xl transition-all duration-500 ${
+      className={`rounded-[18px] transition-all duration-300 ${
         glow
           ? "glass-panel-glow"
-          : "glass-panel hover:bg-white/[0.04]"
+          : "glass-panel hover:bg-[#22222E]"
       } ${onClick ? "cursor-pointer" : ""} ${className}`}
     >
       {children}

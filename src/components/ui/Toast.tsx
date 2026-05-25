@@ -25,13 +25,13 @@ export function Toast() {
   const getIcon = (type: string) => {
     switch (type) {
       case "message":
-        return <MessageSquare size={14} className="text-white/50" />;
+        return <MessageSquare size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
       case "booking_approved":
-        return <ShieldCheck size={14} className="text-white/50" />;
+        return <ShieldCheck size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
       case "booking_request":
-        return <Calendar size={14} className="text-white/50" />;
+        return <Calendar size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
       default:
-        return <MessageSquare size={14} className="text-white/50" />;
+        return <MessageSquare size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
     }
   };
 
@@ -39,26 +39,26 @@ export function Toast() {
     <AnimatePresence>
       {activeToast && (
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          initial={{ opacity: 0, y: 12, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-          className="fixed bottom-20 md:bottom-6 right-6 z-[9999] w-full max-w-sm glass-panel border border-white/[0.06] p-4 rounded-2xl flex items-start gap-3"
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+          className="fixed bottom-20 md:bottom-6 right-6 z-[9999] w-full max-w-sm bg-[#1A1A22] border border-white/[0.07] p-5 rounded-[18px] flex items-start gap-3"
         >
-          <div className="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] shrink-0">
+          <div className="p-2 rounded-xl bg-[#22222E] border border-white/[0.07] shrink-0">
             {getIcon(activeToast.type)}
           </div>
 
           <div className="flex-1 min-w-0">
-            <h4 className="text-xs font-medium text-white/70">{activeToast.title}</h4>
-            <p className="text-xs text-white/40 mt-0.5 leading-relaxed">{activeToast.message}</p>
+            <h4 className="text-xs font-medium text-[#F0EDE6]">{activeToast.title}</h4>
+            <p className="text-xs text-[#7A7870] mt-0.5 leading-relaxed">{activeToast.message}</p>
           </div>
 
           <button
             onClick={() => setActiveToast(null)}
-            className="text-white/20 hover:text-white/60 transition-colors p-1 shrink-0"
+            className="text-[#7A7870] hover:text-[#F0EDE6] transition-colors p-1 shrink-0"
           >
-            <X size={14} />
+            <X size={14} strokeWidth={1.5} />
           </button>
         </motion.div>
       )}
