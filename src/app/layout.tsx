@@ -4,7 +4,21 @@ import { useVelvetStore } from "@/store/useVelvetStore";
 import { AgeConfirmation } from "@/components/ui/AgeConfirmation";
 import { Navigation } from "@/components/ui/Navigation";
 import { Toast } from "@/components/ui/Toast";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -15,7 +29,7 @@ export default function RootLayout({
   const setAgeConfirmed = useVelvetStore((state) => state.setAgeConfirmed);
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
       <head>
         <title>Premium Social Discovery</title>
         <meta name="description" content="Verified Connections. Premium Experiences." />
