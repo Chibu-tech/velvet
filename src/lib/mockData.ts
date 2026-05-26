@@ -23,6 +23,10 @@ export interface Profile {
   rating: number;
   reviewsCount: number;
   requireVerifiedClients: boolean;
+  safeWord?: string;
+  tier?: "free" | "gold" | "platinum";
+  credits?: number;
+  onboarded?: boolean;
 }
 
 export const MOCK_COMPANIONS: Profile[] = [

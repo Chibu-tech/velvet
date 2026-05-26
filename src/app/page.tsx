@@ -50,7 +50,7 @@ export default function Splash() {
             >
               <span className="text-5xl font-display font-medium text-[#C9A84C] mb-8">V</span>
               <h1 className="text-5xl font-display font-medium tracking-tight text-[#F0EDE6] mb-3">
-                Velvet
+                Premium
               </h1>
               <p className="text-sm text-[#7A7870] font-light max-w-xs leading-relaxed mb-12">
                 Verified Connections. Premium Experiences.

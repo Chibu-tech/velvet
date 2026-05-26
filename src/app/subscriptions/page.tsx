@@ -90,7 +90,7 @@ export default function Subscriptions() {
                   )}
                   <div>
                     <h3 className="text-lg font-display font-medium text-[#F0EDE6] flex items-center gap-2">
-                      <Icon size={18} strokeWidth={1.5} className="text-[#C9A84C]" />Velvet {plan.name}
+                      <Icon size={18} strokeWidth={1.5} className="text-[#C9A84C]" />Premium {plan.name}
                     </h3>
                     <div className="mt-4 flex items-baseline">
                       <span className="text-4xl font-display font-medium text-[#F0EDE6]">${plan.price}</span>
@@ -159,7 +159,7 @@ export default function Subscriptions() {
                   </div>
                   <div>
                     <h3 className="text-xl font-display font-medium text-[#F0EDE6]">{pack.amount} Credits</h3>
-                    <p className="text-[10px] text-[#7A7870] uppercase tracking-[0.12em] mt-0.5">Velvet Tokens</p>
+                    <p className="text-[10px] text-[#7A7870] uppercase tracking-[0.12em] mt-0.5">Premium Tokens</p>
                   </div>
                   <div className="text-lg font-medium text-[#F0EDE6] flex items-center mt-2">
                     <DollarSign size={16} strokeWidth={1.5} className="text-[#C9A84C]" />{pack.price} USD

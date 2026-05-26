@@ -27,7 +27,7 @@ export default function Auth() {
     if (!email || !password) { setError("Please fill in all credentials."); return; }
     setError("");
     setCurrentUser({
-      id: "user-1", username: email.split("@")[0] || "velvet_user", displayName: "Guest Member",
+      id: "user-1", username: email.split("@")[0] || "premium_user", displayName: "Guest Member",
       role: "customer", avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100",
       onboarded: false, tier: "free", credits: 50,
       verificationStatus: "unverified", safeWord: "", requireVerifiedClients: false,
@@ -76,8 +76,11 @@ export default function Auth() {
       >
         <GlassCard className="p-6">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-display font-medium tracking-tight text-[#F0EDE6] mb-2">Velvet</h1>
-            <p className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em]">Premium Networking Circle</p>
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#22222E] border border-[#C9A84C]/30 flex items-center justify-center">
+              <span className="text-2xl font-display font-medium text-[#C9A84C]">P</span>
+            </div>
+            <h1 className="text-4xl font-display font-medium tracking-tight text-[#F0EDE6] mb-2">Premium</h1>
+            <p className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em]">Networking Circle</p>
           </div>
 
           <div className="flex bg-[#22222E] border border-white/[0.07] p-1 rounded-[100px] mb-6 text-sm">

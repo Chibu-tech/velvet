@@ -11,7 +11,7 @@ import { useVelvetStore } from "@/store/useVelvetStore";
 export default function Referral() {
   const currentUser = useVelvetStore((state) => state.currentUser);
   const [copied, setCopied] = useState(false);
-  const referralCode = (currentUser?.username?.toUpperCase() || "VELVET") + "VIP";
+  const referralCode = (currentUser?.username?.toUpperCase() || "PREMIUM") + "VIP";
 
   const referralStats = [
     { label: "Invites Sent", value: 3, icon: Users },

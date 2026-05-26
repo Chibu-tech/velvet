@@ -26,7 +26,7 @@ export function AgeConfirmation({ onConfirm }: AgeConfirmationProps) {
         </div>
 
         <h1 className="text-3xl font-display font-medium tracking-tight text-[#F0EDE6] mb-1">
-          Velvet
+          Premium
         </h1>
         <p className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em] mb-6">
           Verified Connections. Premium Experiences.
@@ -63,7 +63,7 @@ export function AgeConfirmation({ onConfirm }: AgeConfirmationProps) {
               <AlertCircle size={14} strokeWidth={1.5} className="shrink-0 mt-0.5 text-[#C9A84C]" />
               <div>
                 <span className="text-[#F0EDE6] font-medium block mb-0.5">Access Denied</span>
-                You must be 18 or older to enter Velvet.
+                You must be 18 or older to enter.
               </div>
             </motion.div>
           )}

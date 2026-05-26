@@ -100,7 +100,7 @@ export function Navigation() {
 
       <header className="fixed top-0 left-0 right-0 z-30 h-14 bg-[#0E0E12]/60 backdrop-blur-md border-b border-white/[0.07] flex items-center justify-between px-5 md:pl-[88px]">
         <Link href="/" className="text-lg font-display font-medium tracking-tight text-[#C9A84C]">
-          VELVET
+          PREMIUM
         </Link>
 
         <div className="flex items-center gap-3">
