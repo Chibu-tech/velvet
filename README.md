@@ -68,3 +68,4 @@ velvet/
 
 Enjoy vibe-coding inside Velvet! 🥂✨
 # velvet
+velvet
