@@ -37,7 +37,7 @@ export default function Subscriptions() {
 
   const getTierBadge = (tier: string) => {
     switch (tier) {
-      case "platinum": return { label: "Platinum Elite", color: "text-[#C9A84C] border-[rgba(201,168,76,0.3)] bg-[#22222E]" };
+      case "platinum": return { label: "Platinum Elite", color: "text-[#80465E] border-[rgba(128,70,94,0.3)] bg-[#22222E]" };
       case "gold": return { label: "Gold Member", color: "text-[#7A7870] border-white/[0.07] bg-[#22222E]" };
       default: return { label: "Free Member", color: "text-[#7A7870] border-white/[0.07] bg-transparent" };
     }
@@ -50,7 +50,7 @@ export default function Subscriptions() {
         <div className="text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-3xl font-display font-medium tracking-tight text-[#F0EDE6] flex items-center gap-2">
-              Membership<span className="text-[10px] bg-[#22222E] text-[#C9A84C] border border-[rgba(201,168,76,0.3)] px-2 py-0.5 rounded-[100px] uppercase tracking-[0.12em] font-medium">Elite</span>
+              Membership<span className="text-[10px] bg-[#22222E] text-[#80465E] border border-[rgba(128,70,94,0.3)] px-2 py-0.5 rounded-[100px] uppercase tracking-[0.12em] font-medium">Elite</span>
             </h1>
             <p className="text-[10px] text-[#7A7870] mt-1 uppercase tracking-[0.12em]">Unlock premium features and elevate your experience.</p>
           </div>
@@ -58,7 +58,7 @@ export default function Subscriptions() {
             {(["membership", "boosts", "credits"] as const).map((tab) => (
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className={`flex-1 md:flex-none px-5 py-2.5 rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all ${
-                  activeTab === tab ? "bg-[#C9A84C] text-[#0E0E12]" : "text-[#7A7870] hover:text-[#F0EDE6]"
+                  activeTab === tab ? "bg-[#80465E] text-[#0E0E12]" : "text-[#7A7870] hover:text-[#F0EDE6]"
                 }`}>{tab}</button>
             ))}
           </div>
@@ -73,7 +73,7 @@ export default function Subscriptions() {
           </div>
           <div className="flex items-center gap-6">
             <div className="text-center sm:text-right"><span className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em] block">Credits</span><span className="text-sm font-medium text-[#F0EDE6] mt-0.5 block">{currentUser?.credits || 0}</span></div>
-            <div className="text-center sm:text-right"><span className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em] block">Level</span><span className="text-sm font-medium text-[#C9A84C] mt-0.5 block">Level {Math.floor((currentUser?.credits || 0) / 50) + 1}</span></div>
+            <div className="text-center sm:text-right"><span className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em] block">Level</span><span className="text-sm font-medium text-[#80465E] mt-0.5 block">Level {Math.floor((currentUser?.credits || 0) / 50) + 1}</span></div>
           </div>
         </GlassCard>
 
@@ -84,13 +84,13 @@ export default function Subscriptions() {
               const isCurrent = currentUser?.tier === plan.tier;
               return (
                 <GlassCard key={plan.name} glow={plan.popular}
-                  className={`p-8 flex flex-col gap-6 relative overflow-hidden ${plan.popular ? "border-[rgba(201,168,76,0.2)]" : "border-white/[0.07]"}`}>
+                  className={`p-8 flex flex-col gap-6 relative overflow-hidden ${plan.popular ? "border-[rgba(128,70,94,0.2)]" : "border-white/[0.07]"}`}>
                   {plan.popular && (
-                    <div className="absolute top-4 right-4 bg-[#22222E] text-[#C9A84C] text-[9px] font-medium uppercase tracking-[0.12em] px-2 py-0.5 rounded-[100px] border border-[rgba(201,168,76,0.3)]">Most Popular</div>
+                    <div className="absolute top-4 right-4 bg-[#22222E] text-[#80465E] text-[9px] font-medium uppercase tracking-[0.12em] px-2 py-0.5 rounded-[100px] border border-[rgba(128,70,94,0.3)]">Most Popular</div>
                   )}
                   <div>
                     <h3 className="text-lg font-display font-medium text-[#F0EDE6] flex items-center gap-2">
-                      <Icon size={18} strokeWidth={1.5} className="text-[#C9A84C]" />Premium {plan.name}
+                      <Icon size={18} strokeWidth={1.5} className="text-[#80465E]" />Premium {plan.name}
                     </h3>
                     <div className="mt-4 flex items-baseline">
                       <span className="text-4xl font-display font-medium text-[#F0EDE6]">${plan.price}</span>
@@ -102,14 +102,14 @@ export default function Subscriptions() {
                     <ul className="flex flex-col gap-3">
                       {plan.features.map((feat, idx) => (
                         <li key={idx} className="flex items-start gap-2.5 text-xs text-[#7A7870] leading-relaxed">
-                          <Check size={14} strokeWidth={1.5} className="text-[#C9A84C] shrink-0 mt-0.5" />{feat}
+                          <Check size={14} strokeWidth={1.5} className="text-[#80465E] shrink-0 mt-0.5" />{feat}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <button onClick={() => handleUpgrade(plan.tier)} disabled={isCurrent}
                     className={`w-full py-3.5 rounded-[100px] font-medium text-xs uppercase tracking-[0.04em] transition-all mt-4 active:scale-[0.97] ${
-                      isCurrent ? "bg-[#22222E] border border-white/[0.07] text-[#7A7870] cursor-not-allowed" : "bg-[#C9A84C] text-[#0E0E12]"
+                      isCurrent ? "bg-[#22222E] border border-white/[0.07] text-[#7A7870] cursor-not-allowed" : "bg-[#80465E] text-[#0E0E12]"
                     }`}>{isCurrent ? "Current Plan" : `Upgrade to ${plan.name}`}</button>
                 </GlassCard>
               );
@@ -122,25 +122,25 @@ export default function Subscriptions() {
             <GlassCard className="p-8 text-center flex flex-col items-center gap-6 relative">
               {boostActive && (
                 <div className="absolute inset-0 bg-[rgba(14,14,18,0.95)] backdrop-blur-md z-20 flex flex-col justify-center items-center rounded-[18px]">
-                  <Zap size={48} strokeWidth={1.5} className="text-[#C9A84C] animate-bounce mb-2" />
+                  <Zap size={48} strokeWidth={1.5} className="text-[#80465E] animate-bounce mb-2" />
                   <h3 className="text-lg font-display font-medium text-[#F0EDE6] uppercase tracking-[0.12em]">Profile Boosted</h3>
                   <p className="text-xs text-[#7A7870] mt-1">Your visibility is increased for 2 hours.</p>
                 </div>
               )}
-              <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-[rgba(201,168,76,0.3)] flex items-center justify-center">
-                <Zap size={32} strokeWidth={1.5} className="text-[#C9A84C]" />
+              <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-[rgba(128,70,94,0.3)] flex items-center justify-center">
+                <Zap size={32} strokeWidth={1.5} className="text-[#80465E]" />
               </div>
               <div>
                 <h2 className="text-2xl font-display font-medium text-[#F0EDE6] uppercase tracking-[0.12em]">Profile Boost</h2>
                 <p className="text-xs text-[#7A7870] mt-2 max-w-sm mx-auto">Pin your profile at the top of discovery for 2 hours.</p>
               </div>
-              <div className="p-4 rounded-[18px] bg-[#22222E] border border-[rgba(201,168,76,0.2)] flex justify-between items-center text-xs w-full max-w-sm">
+              <div className="p-4 rounded-[18px] bg-[#22222E] border border-[rgba(128,70,94,0.2)] flex justify-between items-center text-xs w-full max-w-sm">
                 <span className="text-[#7A7870] uppercase tracking-[0.12em]">Cost</span>
-                <span className="text-sm font-medium text-[#C9A84C] uppercase">20 Credits</span>
+                <span className="text-sm font-medium text-[#80465E] uppercase">20 Credits</span>
               </div>
               <button onClick={handleBoost} disabled={!currentUser || currentUser.credits < 20}
                 className={`w-full max-w-sm py-3.5 rounded-[100px] font-medium text-xs uppercase tracking-[0.04em] transition-all active:scale-[0.97] ${
-                  (!currentUser || currentUser.credits < 20) ? "bg-[#22222E] border border-white/[0.07] text-[#7A7870] cursor-not-allowed" : "bg-[#C9A84C] text-[#0E0E12]"
+                  (!currentUser || currentUser.credits < 20) ? "bg-[#22222E] border border-white/[0.07] text-[#7A7870] cursor-not-allowed" : "bg-[#80465E] text-[#0E0E12]"
                 }`}>{(!currentUser || currentUser.credits < 20) ? "Insufficient Credits" : "Activate 2H Boost"}</button>
             </GlassCard>
           </div>
@@ -152,20 +152,20 @@ export default function Subscriptions() {
               const Icon = pack.icon;
               return (
                 <GlassCard key={idx} glow={pack.popular}
-                  className={`p-6 text-center flex flex-col items-center gap-4 ${pack.popular ? "border-[rgba(201,168,76,0.2)]" : "border-white/[0.07]"}`}>
-                  {pack.popular && <div className="bg-[#22222E] text-[#C9A84C] text-[8px] font-medium uppercase tracking-[0.12em] px-2 py-0.5 rounded-[100px] border border-[rgba(201,168,76,0.3)]">Best Value</div>}
+                  className={`p-6 text-center flex flex-col items-center gap-4 ${pack.popular ? "border-[rgba(128,70,94,0.2)]" : "border-white/[0.07]"}`}>
+                  {pack.popular && <div className="bg-[#22222E] text-[#80465E] text-[8px] font-medium uppercase tracking-[0.12em] px-2 py-0.5 rounded-[100px] border border-[rgba(128,70,94,0.3)]">Best Value</div>}
                   <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-white/[0.07] flex items-center justify-center">
-                    <Icon size={22} strokeWidth={1.5} className="text-[#C9A84C]" />
+                    <Icon size={22} strokeWidth={1.5} className="text-[#80465E]" />
                   </div>
                   <div>
                     <h3 className="text-xl font-display font-medium text-[#F0EDE6]">{pack.amount} Credits</h3>
                     <p className="text-[10px] text-[#7A7870] uppercase tracking-[0.12em] mt-0.5">Premium Tokens</p>
                   </div>
                   <div className="text-lg font-medium text-[#F0EDE6] flex items-center mt-2">
-                    <DollarSign size={16} strokeWidth={1.5} className="text-[#C9A84C]" />{pack.price} USD
+                    <DollarSign size={16} strokeWidth={1.5} className="text-[#80465E]" />{pack.price} USD
                   </div>
                   <button onClick={() => buyCredits(pack.amount)}
-                    className="w-full py-3 bg-[#22222E] hover:bg-[#C9A84C] hover:text-[#0E0E12] rounded-[100px] border border-white/[0.07] text-xs font-medium uppercase tracking-[0.04em] transition-all active:scale-[0.97]">Purchase</button>
+                    className="w-full py-3 bg-[#22222E] hover:bg-[#80465E] hover:text-[#0E0E12] rounded-[100px] border border-white/[0.07] text-xs font-medium uppercase tracking-[0.04em] transition-all active:scale-[0.97]">Purchase</button>
                 </GlassCard>
               );
             })}

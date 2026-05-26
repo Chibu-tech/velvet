@@ -53,10 +53,6 @@ function mapProfileToDb(p: Partial<Profile>): Record<string, any> {
   if (p.pricingDaily !== undefined) db.pricing_daily = p.pricingDaily;
   if (p.pricingCurrency !== undefined) db.pricing_currency = p.pricingCurrency;
   if (p.requireVerifiedClients !== undefined) db.require_verified_clients = p.requireVerifiedClients;
-  if (p.safeWord !== undefined) db.safe_word = p.safeWord;
-  if (p.tier !== undefined) db.tier = p.tier;
-  if (p.credits !== undefined) db.credits = p.credits;
-  if (p.onboarded !== undefined) db.onboarded = p.onboarded;
   return db;
 }
 

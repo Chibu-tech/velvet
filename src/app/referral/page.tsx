@@ -38,7 +38,7 @@ export default function Referral() {
         <div className="text-center md:text-left">
           <h1 className="text-3xl font-display font-medium tracking-tight text-[#F0EDE6] flex items-center gap-2 justify-center md:justify-start">
             Referral Program
-            <span className="text-[10px] bg-[#22222E] text-[#C9A84C] border border-[rgba(201,168,76,0.3)] px-2 py-0.5 rounded-[100px] uppercase tracking-[0.12em] font-medium">Invite Only</span>
+            <span className="text-[10px] bg-[#22222E] text-[#80465E] border border-[rgba(128,70,94,0.3)] px-2 py-0.5 rounded-[100px] uppercase tracking-[0.12em] font-medium">Invite Only</span>
           </h1>
           <p className="text-[10px] text-[#7A7870] mt-1 text-center md:text-left uppercase tracking-[0.12em]">Invite trusted friends and earn rewards.</p>
         </div>
@@ -49,7 +49,7 @@ export default function Referral() {
             return (
               <GlassCard key={idx} className="p-5 flex items-center gap-4">
                 <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-white/[0.07] flex items-center justify-center shrink-0">
-                  <Icon size={18} strokeWidth={1.5} className="text-[#C9A84C]" />
+                  <Icon size={18} strokeWidth={1.5} className="text-[#80465E]" />
                 </div>
                 <div>
                   <span className="text-lg font-display font-medium text-[#F0EDE6]">{stat.value}</span>
@@ -61,8 +61,8 @@ export default function Referral() {
         </div>
 
         <GlassCard className="p-8 text-center flex flex-col items-center gap-6">
-          <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-[rgba(201,168,76,0.3)] flex items-center justify-center">
-            <Gift size={32} strokeWidth={1.5} className="text-[#C9A84C]" />
+          <div className="w-[52px] h-[52px] rounded-full bg-[#22222E] border border-[rgba(128,70,94,0.3)] flex items-center justify-center">
+            <Gift size={32} strokeWidth={1.5} className="text-[#80465E]" />
           </div>
           <div>
             <h2 className="text-2xl font-display font-medium text-[#F0EDE6]">Your Invite Code</h2>
@@ -70,14 +70,14 @@ export default function Referral() {
           </div>
           <div className="flex items-center gap-3 w-full max-w-md">
             <div className="flex-1 p-4 rounded-[12px] bg-[#22222E] border border-white/[0.07] text-center">
-              <span className="text-xl font-display font-medium tracking-widest text-[#C9A84C]">{referralCode}</span>
+              <span className="text-xl font-display font-medium tracking-widest text-[#80465E]">{referralCode}</span>
             </div>
             <button onClick={handleCopy}
-              className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] rounded-full transition-all flex items-center justify-center active:scale-[0.97] hover:bg-[#C9A84C] hover:text-[#0E0E12]">
-              {copied ? <CheckCircle size={20} strokeWidth={1.5} className="text-green-400" /> : <Copy size={20} strokeWidth={1.5} className="text-[#C9A84C]" />}
+              className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] rounded-full transition-all flex items-center justify-center active:scale-[0.97] hover:bg-[#80465E] hover:text-[#0E0E12]">
+              {copied ? <CheckCircle size={20} strokeWidth={1.5} className="text-green-400" /> : <Copy size={20} strokeWidth={1.5} className="text-[#80465E]" />}
             </button>
-            <button className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] rounded-full transition-all flex items-center justify-center active:scale-[0.97] hover:bg-[#C9A84C] hover:text-[#0E0E12]">
-              <Share2 size={20} strokeWidth={1.5} className="text-[#C9A84C]" />
+            <button className="min-w-[48px] min-h-[48px] bg-[#22222E] border border-white/[0.07] rounded-full transition-all flex items-center justify-center active:scale-[0.97] hover:bg-[#80465E] hover:text-[#0E0E12]">
+              <Share2 size={20} strokeWidth={1.5} className="text-[#80465E]" />
             </button>
           </div>
           {copied && <p className="text-xs text-green-400">Copied to clipboard!</p>}
@@ -91,7 +91,7 @@ export default function Referral() {
               return (
                 <div key={idx} className="flex items-center gap-4 p-4 rounded-[18px] bg-[#22222E] border border-white/[0.07]">
                   <div className="w-[52px] h-[52px] rounded-full bg-[#1A1A22] flex items-center justify-center shrink-0">
-                    <Icon size={18} strokeWidth={1.5} className="text-[#C9A84C]" />
+                    <Icon size={18} strokeWidth={1.5} className="text-[#80465E]" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-[#F0EDE6]">{tier.invites} {tier.invites === 1 ? "Invite" : "Invites"}</p>

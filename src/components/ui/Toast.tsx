@@ -25,11 +25,11 @@ export function Toast() {
   const getIcon = (type: string) => {
     switch (type) {
       case "message":
-        return <MessageSquare size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
+        return <MessageSquare size={14} strokeWidth={1.5} className="text-[#80465E]" />;
       case "booking_approved":
-        return <ShieldCheck size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
+        return <ShieldCheck size={14} strokeWidth={1.5} className="text-[#80465E]" />;
       case "booking_request":
-        return <Calendar size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
+        return <Calendar size={14} strokeWidth={1.5} className="text-[#80465E]" />;
       case "booking_active":
         return <LogIn size={14} strokeWidth={1.5} className="text-emerald-400" />;
       case "safety_alert":
@@ -37,9 +37,9 @@ export function Toast() {
       case "panic":
         return <AlertTriangle size={14} strokeWidth={1.5} className="text-rose-400" />;
       case "rating":
-        return <Star size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
+        return <Star size={14} strokeWidth={1.5} className="text-[#80465E]" />;
       default:
-        return <MessageSquare size={14} strokeWidth={1.5} className="text-[#C9A84C]" />;
+        return <MessageSquare size={14} strokeWidth={1.5} className="text-[#80465E]" />;
     }
   };
 

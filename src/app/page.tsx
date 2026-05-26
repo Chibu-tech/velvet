@@ -38,8 +38,8 @@ export default function Splash() {
               transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
               className="flex flex-col items-center"
             >
-              <span className="text-5xl font-display font-medium text-[#C9A84C] mb-6">V</span>
-              <div className="w-5 h-5 border border-[#C9A84C]/20 border-t-[#C9A84C]/60 rounded-full animate-spin" />
+              <img src="/logo/Velvet.png" alt="Velvet" className="w-20 h-20 mb-6 object-contain" />
+              <div className="w-5 h-5 border border-[#80465E]/20 border-t-[#80465E]/60 rounded-full animate-spin" />
             </motion.div>
           ) : (
             <motion.div
@@ -48,7 +48,7 @@ export default function Splash() {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
               className="flex flex-col items-center px-6 text-center"
             >
-              <span className="text-5xl font-display font-medium text-[#C9A84C] mb-8">V</span>
+              <img src="/logo/Velvet.png" alt="Velvet" className="w-24 h-24 mb-8 object-contain" />
               <h1 className="text-5xl font-display font-medium tracking-tight text-[#F0EDE6] mb-3">
                 Premium
               </h1>
@@ -57,7 +57,7 @@ export default function Splash() {
               </p>
               <button
                 onClick={handleEnter}
-                className="px-10 py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] transition-all duration-300 text-sm tracking-[0.04em] active:scale-[0.97]"
+                className="px-10 py-3.5 bg-[#80465E] text-[#0E0E12] font-medium rounded-[100px] transition-all duration-300 text-sm tracking-[0.04em] active:scale-[0.97]"
               >
                 Enter
               </button>

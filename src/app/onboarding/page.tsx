@@ -56,7 +56,7 @@ export default function Onboarding() {
             </div>
             <div className="flex gap-1.5">
               {Array.from({ length: totalSteps }).map((_, idx) => (
-                <div key={idx} className={`h-1 rounded-full transition-all duration-300 ${step > idx ? "w-8 bg-[#C9A84C]" : "w-4 bg-white/[0.07]"}`} />
+                <div key={idx} className={`h-1 rounded-full transition-all duration-300 ${step > idx ? "w-8 bg-[#80465E]" : "w-4 bg-white/[0.07]"}`} />
               ))}
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function Onboarding() {
                     <div className="w-[104px] h-[104px] rounded-full border-2 border-white/[0.1] overflow-hidden">
                       <img src={avatar} alt="" className="w-full h-full object-cover" />
                     </div>
-                    <button className="absolute bottom-0 right-0 p-2 bg-[#22222E] text-[#C9A84C] rounded-full border border-white/[0.07] transition-all hover:scale-105">
+                    <button className="absolute bottom-0 right-0 p-2 bg-[#22222E] text-[#80465E] rounded-full border border-white/[0.07] transition-all hover:scale-105">
                       <Camera size={14} strokeWidth={1.5} />
                     </button>
                   </div>
@@ -81,13 +81,13 @@ export default function Onboarding() {
                   <label className="text-[10px] font-medium text-[#7A7870] uppercase tracking-[0.12em]">Display Name</label>
                   <input type="text" placeholder="Your display name" value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                    className="w-full px-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] font-medium text-[#7A7870] uppercase tracking-[0.12em]">Bio</label>
                   <textarea rows={3} placeholder="Tell us about yourself..." value={bio}
                     onChange={(e) => setBio(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all resize-none" />
+                    className="w-full px-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all resize-none" />
                 </div>
                 {isCompanion && (
                   <div className="flex flex-col gap-1.5">
@@ -96,7 +96,7 @@ export default function Onboarding() {
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7870] text-sm">$</span>
                       <input type="number" placeholder="150" value={hourlyPrice}
                         onChange={(e) => setHourlyPrice(e.target.value)}
-                        className="w-full pl-8 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                        className="w-full pl-8 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                     </div>
                   </div>
                 )}
@@ -115,7 +115,7 @@ export default function Onboarding() {
                       return (
                         <button key={interest} type="button" onClick={() => handleInterestToggle(interest)}
                           className={`px-3 py-1.5 rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium border transition-all ${
-                            selected ? "bg-[#22222E] text-[#C9A84C] border-[rgba(201,168,76,0.3)]" : "border-white/[0.07] bg-[#1A1A22] text-[#7A7870] hover:text-[#F0EDE6]"
+                            selected ? "bg-[#22222E] text-[#80465E] border-[rgba(128,70,94,0.3)]" : "border-white/[0.07] bg-[#1A1A22] text-[#7A7870] hover:text-[#F0EDE6]"
                           }`}>{interest}</button>
                       );
                     })}
@@ -129,7 +129,7 @@ export default function Onboarding() {
                       return (
                         <button key={lang} type="button" onClick={() => handleLanguageToggle(lang)}
                           className={`px-3 py-1.5 rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium border transition-all ${
-                            selected ? "bg-[#22222E] text-[#C9A84C] border-[rgba(201,168,76,0.3)]" : "border-white/[0.07] bg-[#1A1A22] text-[#7A7870] hover:text-[#F0EDE6]"
+                            selected ? "bg-[#22222E] text-[#80465E] border-[rgba(128,70,94,0.3)]" : "border-white/[0.07] bg-[#1A1A22] text-[#7A7870] hover:text-[#F0EDE6]"
                           }`}>{lang}</button>
                       );
                     })}
@@ -142,15 +142,15 @@ export default function Onboarding() {
               <motion.div key="step-3" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
                 className="flex flex-col gap-5">
-                <GlassCard className="p-5 border border-[rgba(201,168,76,0.2)]">
+                <GlassCard className="p-5 border border-[rgba(128,70,94,0.2)]">
                   <div className="flex items-start gap-4">
                     <input type="checkbox" id="vetting-check" checked={requestVerification}
                       onChange={(e) => setRequestVerification(e.target.checked)}
-                      className="mt-1 w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#C9A84C]" />
+                      className="mt-1 w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#80465E]" />
                     <div>
                       <label htmlFor="vetting-check" className="text-sm font-medium text-[#F0EDE6] cursor-pointer select-none flex items-center gap-1.5">
                         Request verification
-                        <CheckCircle size={14} strokeWidth={1.5} className="text-[#C9A84C]" />
+                        <CheckCircle size={14} strokeWidth={1.5} className="text-[#80465E]" />
                       </label>
                       <p className="text-xs text-[#7A7870] mt-1 leading-relaxed">
                         Submit for review to earn the Verified badge. Verified profiles receive priority placement.
@@ -170,7 +170,7 @@ export default function Onboarding() {
               <ArrowLeft size={14} strokeWidth={1.5} />Back
             </button>
             <button onClick={handleNext}
-              className="px-6 py-3 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] flex items-center gap-1.5 transition-all active:scale-[0.97]">
+              className="px-6 py-3 bg-[#80465E] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] flex items-center gap-1.5 transition-all active:scale-[0.97]">
               {step === totalSteps ? "Complete" : "Continue"}<ArrowRight size={14} strokeWidth={1.5} />
             </button>
           </div>

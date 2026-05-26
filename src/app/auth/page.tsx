@@ -76,8 +76,8 @@ export default function Auth() {
       >
         <GlassCard className="p-6">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#22222E] border border-[#C9A84C]/30 flex items-center justify-center">
-              <span className="text-2xl font-display font-medium text-[#C9A84C]">P</span>
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#22222E] border border-[#80465E]/30 flex items-center justify-center">
+              <span className="text-2xl font-display font-medium text-[#80465E]">P</span>
             </div>
             <h1 className="text-4xl font-display font-medium tracking-tight text-[#F0EDE6] mb-2">Premium</h1>
             <p className="text-[10px] text-[#7A7870] font-medium uppercase tracking-[0.12em]">Networking Circle</p>
@@ -87,7 +87,7 @@ export default function Auth() {
             {(["signin", "signup", "otp"] as const).map((t) => (
               <button key={t} onClick={() => { setMode(t); setError(""); }}
                 className={`flex-1 py-2 rounded-[100px] font-medium transition-all text-[10px] uppercase tracking-[0.12em] ${
-                  mode === t ? "bg-[#C9A84C] text-[#0E0E12]" : "text-[#7A7870] hover:text-[#F0EDE6]"
+                  mode === t ? "bg-[#80465E] text-[#0E0E12]" : "text-[#7A7870] hover:text-[#F0EDE6]"
                 }`}>
                 {t === "signin" ? "Sign In" : t === "signup" ? "Join" : "OTP"}
               </button>
@@ -109,16 +109,16 @@ export default function Auth() {
                   <Mail size={16} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7870]" />
                   <input type="email" placeholder="Email address" value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                 </div>
                 <div className="relative">
                   <Lock size={16} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7870]" />
                   <input type="password" placeholder="Password" value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                 </div>
                 <button type="submit"
-                  className="w-full py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
+                  className="w-full py-3.5 bg-[#80465E] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
                   <span>Sign in</span>
                 </button>
                 <div className="relative my-2">
@@ -139,13 +139,13 @@ export default function Auth() {
                 <div className="flex gap-3 mb-2">
                   <button type="button" onClick={() => setRole("customer")}
                     className={`flex-1 py-2.5 rounded-[100px] border font-medium text-[10px] uppercase tracking-[0.12em] flex items-center justify-center gap-1.5 transition-all ${
-                      role === "customer" ? "bg-[#C9A84C] border-[#C9A84C] text-[#0E0E12]" : "border-white/[0.2] bg-transparent text-[#7A7870] hover:text-[#F0EDE6]"
+                      role === "customer" ? "bg-[#80465E] border-[#80465E] text-[#0E0E12]" : "border-white/[0.2] bg-transparent text-[#7A7870] hover:text-[#F0EDE6]"
                     }`}>
                     <UserCheck size={14} strokeWidth={1.5} />Member
                   </button>
                   <button type="button" onClick={() => setRole("companion")}
                     className={`flex-1 py-2.5 rounded-[100px] border font-medium text-[10px] uppercase tracking-[0.12em] flex items-center justify-center gap-1.5 transition-all ${
-                      role === "companion" ? "bg-[#C9A84C] border-[#C9A84C] text-[#0E0E12]" : "border-white/[0.2] bg-transparent text-[#7A7870] hover:text-[#F0EDE6]"
+                      role === "companion" ? "bg-[#80465E] border-[#80465E] text-[#0E0E12]" : "border-white/[0.2] bg-transparent text-[#7A7870] hover:text-[#F0EDE6]"
                     }`}>
                     <ShieldCheck size={14} strokeWidth={1.5} />Companion
                   </button>
@@ -154,16 +154,16 @@ export default function Auth() {
                   <Mail size={16} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7870]" />
                   <input type="email" placeholder="Email address" value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                 </div>
                 <div className="relative">
                   <Lock size={16} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7870]" />
                   <input type="password" placeholder="Create password" value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                    className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                 </div>
                 <button type="submit"
-                  className="w-full py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
+                  className="w-full py-3.5 bg-[#80465E] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
                   Create account
                 </button>
                 <p className="text-[10px] text-[#7A7870] text-center leading-relaxed tracking-[0.12em] uppercase">
@@ -182,10 +182,10 @@ export default function Auth() {
                       <Phone size={16} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7870]" />
                       <input type="tel" placeholder="Phone number" value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                        className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                     </div>
                     <button type="submit"
-                      className="w-full py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
+                      className="w-full py-3.5 bg-[#80465E] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
                       Send code
                     </button>
                   </>
@@ -195,13 +195,13 @@ export default function Auth() {
                       <Lock size={16} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7870]" />
                       <input type="text" placeholder="Enter 4-digit code" value={otpCode}
                         onChange={(e) => setOtpCode(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all text-center tracking-[0.5em] font-mono text-lg" />
+                        className="w-full pl-11 pr-4 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-sm placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all text-center tracking-[0.5em] font-mono text-lg" />
                     </div>
                     <p className="text-[10px] text-[#7A7870] text-center uppercase tracking-[0.12em]">
-                      Use code <span className="text-[#C9A84C]">1234</span> for demo
+                      Use code <span className="text-[#80465E]">1234</span> for demo
                     </p>
                     <button type="submit"
-                      className="w-full py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
+                      className="w-full py-3.5 bg-[#80465E] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
                       Verify
                     </button>
                   </>

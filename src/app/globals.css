@@ -9,8 +9,8 @@
   --bg-surface: #1A1A22;
   --bg-elevated: #22222E;
   --bg-light: #F5F3EF;
-  --accent: #C9A84C;
-  --accent-soft: #E8D5A3;
+  --accent: #80465E;
+  --accent-soft: #B3909E;
   --text-primary: #F0EDE6;
   --text-muted: #7A7870;
   --text-light: #14131A;
@@ -48,15 +48,7 @@ body {
 
 .glass-panel-glow {
   background: var(--bg-surface);
-  border: 0.5px solid rgba(201, 168, 76, 0.2);
-}
-
-.glass-input {
-  background: var(--bg-elevated);
-  border: 0.5px solid rgba(255,255,255,0.1);
-  color: var(--text-primary);
-  border-radius: 12px;
-  transition: all 0.3s ease;
+   border: 0.5px solid rgba(128, 70, 94, 0.2);
 }
 
 .glass-input:focus {

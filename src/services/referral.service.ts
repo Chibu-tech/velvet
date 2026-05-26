@@ -24,9 +24,9 @@ export async function redeemReferralCode(code: string, newUserId: string): Promi
   if (useMock()) {
     return true;
   }
-  const { data } = await getSupabase().from("referral_codes").select("id, user_id").eq("code", code).maybeSingle();
-  if (!data) return false;
-  await getSupabase().from("referral_codes").update({ reward_count: getSupabase().rpc("increment") as any }).eq("id", data.id);
+  const { data: ref } = await getSupabase().from("referral_codes").select("id, user_id, reward_count").eq("code", code).maybeSingle();
+  if (!ref) return false;
+  await getSupabase().from("referral_codes").update({ reward_count: (ref.reward_count || 0) + 1 }).eq("id", ref.id);
   await addCredits(data.user_id, 10);
   await addCredits(newUserId, 5);
   return true;

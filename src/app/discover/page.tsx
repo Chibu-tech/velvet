@@ -53,14 +53,14 @@ export default function Discover() {
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button onClick={() => setShowFilters(!showFilters)}
-            className={`p-3.5 rounded-[100px] border transition-all ${showFilters ? "bg-[#22222E] border-[#C9A84C] text-[#C9A84C]" : "border-white/[0.07] bg-transparent text-[#7A7870] hover:text-[#F0EDE6]"}`}>
+            className={`p-3.5 rounded-[100px] border transition-all ${showFilters ? "bg-[#22222E] border-[#80465E] text-[#80465E]" : "border-white/[0.07] bg-transparent text-[#7A7870] hover:text-[#F0EDE6]"}`}>
             <SlidersHorizontal size={16} strokeWidth={1.5} />
           </button>
           <div className="flex bg-[#1A1A22] border border-white/[0.07] p-1 rounded-[100px] w-full sm:w-auto">
             {(["swipe", "grid", "map"] as const).map((mode) => (
               <button key={mode} onClick={() => setViewMode(mode)}
                 className={`flex-1 sm:flex-none px-4 py-2 rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium flex items-center justify-center gap-1.5 transition-all ${
-                  viewMode === mode ? "bg-[#C9A84C] text-[#0E0E12]" : "text-[#7A7870] hover:text-[#F0EDE6]"
+                  viewMode === mode ? "bg-[#80465E] text-[#0E0E12]" : "text-[#7A7870] hover:text-[#F0EDE6]"
                 }`}>
                 {mode === "swipe" ? <><Compass size={13} strokeWidth={1.5} /><span>Swipe</span></>
                   : mode === "grid" ? <><Grid size={13} strokeWidth={1.5} /><span>Grid</span></>
@@ -78,25 +78,25 @@ export default function Discover() {
             <GlassCard className="p-5 grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-[10px] font-medium text-[#7A7870] uppercase tracking-[0.12em]">
-                  <span>Distance</span><span className="text-[#C9A84C]">{radius} km</span>
+                  <span>Distance</span><span className="text-[#80465E]">{radius} km</span>
                 </div>
                 <input type="range" min="5" max="100" value={radius} onChange={(e) => setRadius(parseInt(e.target.value))}
                   className="w-full h-1.5 bg-white/[0.07] rounded-lg appearance-none cursor-pointer" />
               </div>
               <div className="flex items-center gap-3">
                 <input type="checkbox" id="online-chk" checked={onlineOnly} onChange={(e) => setOnlineOnly(e.target.checked)}
-                  className="w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#C9A84C]" />
+                  className="w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#80465E]" />
                 <label htmlFor="online-chk" className="text-sm text-[#7A7870] cursor-pointer select-none">Online Now</label>
               </div>
               <div className="flex items-center gap-3">
                 <input type="checkbox" id="verified-chk" checked={verifiedOnly} onChange={(e) => setVerifiedOnly(e.target.checked)}
-                  className="w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#C9A84C]" />
+                  className="w-4 h-4 rounded border-white/[0.1] bg-[#22222E] cursor-pointer accent-[#80465E]" />
                 <label htmlFor="verified-chk" className="text-sm text-[#7A7870] cursor-pointer select-none">Verified Only</label>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-medium text-[#7A7870] uppercase tracking-[0.12em]">Category</label>
                 <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-[#22222E] border border-white/[0.1] text-[#F0EDE6] rounded-[12px] px-3 py-2 text-sm focus:border-[#C9A84C] focus:outline-none">
+                  className="bg-[#22222E] border border-white/[0.1] text-[#F0EDE6] rounded-[12px] px-3 py-2 text-sm focus:border-[#80465E] focus:outline-none">
                   <option value="All" className="bg-[#0E0E12]">All</option>
                   <option value="Nightlife Hosting" className="bg-[#0E0E12]">Nightlife</option>
                   <option value="Social Meetups" className="bg-[#0E0E12]">Social Meetups</option>
@@ -122,11 +122,11 @@ export default function Discover() {
                     <img src={activeHost.avatarUrl} alt={activeHost.displayName} className="w-full h-full object-cover pointer-events-none select-none" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[rgba(14,14,18,0.7)] to-transparent pointer-events-none" />
                     <div className="absolute top-5 left-5 flex gap-2">
-                      <span className="px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] font-medium tracking-[0.12em] uppercase text-[#7A7870] border border-[rgba(201,168,76,0.3)] flex items-center gap-1">
+                      <span className="px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] font-medium tracking-[0.12em] uppercase text-[#7A7870] border border-[rgba(128,70,94,0.3)] flex items-center gap-1">
                         <MapPin size={10} strokeWidth={1.5} />{activeHost.distanceKm} km
                       </span>
                       {activeHost.isVerified && (
-                        <span className="px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] font-medium tracking-[0.12em] uppercase text-[#C9A84C] border border-[rgba(201,168,76,0.3)] flex items-center gap-1">
+                        <span className="px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] font-medium tracking-[0.12em] uppercase text-[#80465E] border border-[rgba(128,70,94,0.3)] flex items-center gap-1">
                           <ShieldCheck size={10} strokeWidth={1.5} />Verified
                         </span>
                       )}
@@ -137,7 +137,7 @@ export default function Discover() {
                       </span>
                     </div>
                     {swipeDirection === "right" && (
-                      <div className="absolute top-1/2 left-10 -translate-y-1/2 border-2 border-[#C9A84C] text-[#C9A84C] font-display font-medium text-4xl uppercase px-4 py-2 rounded-[18px] rotate-[-15deg] tracking-widest bg-[#0E0E12]/80">
+                      <div className="absolute top-1/2 left-10 -translate-y-1/2 border-2 border-[#80465E] text-[#80465E] font-display font-medium text-4xl uppercase px-4 py-2 rounded-[18px] rotate-[-15deg] tracking-widest bg-[#0E0E12]/80">
                         Connect
                       </div>
                     )}
@@ -152,7 +152,7 @@ export default function Discover() {
                       <div>
                         <h2 className="text-2xl font-display font-medium text-[#F0EDE6] flex items-center gap-2">
                           {activeHost.displayName}
-                          {activeHost.isVerified && <CheckCircle size={18} strokeWidth={1.5} className="text-[#C9A84C]" />}
+                          {activeHost.isVerified && <CheckCircle size={18} strokeWidth={1.5} className="text-[#80465E]" />}
                         </h2>
                         <div className="flex gap-3 items-center mt-1">
                           <div className="flex items-center gap-1">
@@ -160,14 +160,14 @@ export default function Discover() {
                             <span className="text-[10px] text-[#7A7870] uppercase tracking-[0.12em]">{activeHost.lastActive}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Star size={11} strokeWidth={1.5} className="text-[#C9A84C]" />
+                            <Star size={11} strokeWidth={1.5} className="text-[#80465E]" />
                             <span className="text-[10px] text-[#7A7870]">{activeHost.rating}</span>
                           </div>
                         </div>
                       </div>
                       <div className="flex gap-1.5">
                         {activeHost.categories.slice(0, 2).map((c, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#C9A84C] border border-[rgba(201,168,76,0.3)]">{c}</span>
+                          <span key={i} className="px-2 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#80465E] border border-[rgba(128,70,94,0.3)]">{c}</span>
                         ))}
                       </div>
                     </div>
@@ -187,7 +187,7 @@ export default function Discover() {
                         View profile
                       </Link>
                       <button onClick={handleSwipeRight}
-                        className="min-w-[48px] min-h-[48px] rounded-full bg-[#C9A84C] text-[#0E0E12] transition-all flex items-center justify-center active:scale-[0.97]">
+                        className="min-w-[48px] min-h-[48px] rounded-full bg-[#80465E] text-[#0E0E12] transition-all flex items-center justify-center active:scale-[0.97]">
                         <Heart size={18} strokeWidth={1.5} />
                       </button>
                     </div>
@@ -212,27 +212,27 @@ export default function Discover() {
                   <img src={host.avatarUrl} alt={host.displayName} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgba(14,14,18,0.7)] to-transparent" />
                   <div className="absolute top-3 left-3">
-                    <span className="px-2 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#C9A84C] border border-[rgba(201,168,76,0.3)]">{host.distanceKm} km</span>
+                    <span className="px-2 py-0.5 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium text-[#80465E] border border-[rgba(128,70,94,0.3)]">{host.distanceKm} km</span>
                   </div>
                   <div className="absolute top-3 right-3">
                     <span className="px-2 py-0.5 bg-[#1A1A22] rounded-[100px] text-[10px] font-medium text-[#F0EDE6] border border-white/[0.07]">${host.pricingHourly}/hr</span>
                   </div>
                   <div className="absolute bottom-3 left-3">
-                    <h3 className="text-base font-display font-medium text-[#F0EDE6] flex items-center gap-1">{host.displayName}{host.isVerified && <CheckCircle size={13} strokeWidth={1.5} className="text-[#C9A84C]" />}</h3>
+                    <h3 className="text-base font-display font-medium text-[#F0EDE6] flex items-center gap-1">{host.displayName}{host.isVerified && <CheckCircle size={13} strokeWidth={1.5} className="text-[#80465E]" />}</h3>
                   </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between gap-3">
                   <p className="text-[11px] text-[#7A7870] leading-relaxed line-clamp-2">{host.bio}</p>
                   <div className="flex items-center gap-2">
-                    <Star size={10} strokeWidth={1.5} className="text-[#C9A84C]" />
+                    <Star size={10} strokeWidth={1.5} className="text-[#80465E]" />
                     <span className="text-[10px] text-[#7A7870]">{host.rating}</span>
                     <span className="text-[10px] text-[#7A7870]">•</span>
                     <span className="text-[10px] text-[#7A7870]">{host.trustScore}% trust</span>
                   </div>
                   <div className="flex gap-2">
                     <Link href={`/profile/${host.id}`} className="flex-1 py-2 text-center border border-white/[0.2] text-[#F0EDE6] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium hover:bg-white/[0.04] transition-all">View profile</Link>
-                    <button onClick={() => { const cid = createConversation(host.id); window.location.href = `/chat?conv=${cid}`; }}
-                      className="min-w-[48px] min-h-[48px] bg-[#C9A84C] text-[#0E0E12] rounded-[100px] flex items-center justify-center transition-all active:scale-[0.97]">
+                    <button onClick={async () => { const cid = await createConversation(host.id); window.location.href = `/chat?conv=${cid}`; }}
+                      className="min-w-[48px] min-h-[48px] bg-[#80465E] text-[#0E0E12] rounded-[100px] flex items-center justify-center transition-all active:scale-[0.97]">
                       <MessageSquare size={14} strokeWidth={1.5} />
                     </button>
                   </div>
@@ -247,7 +247,7 @@ export default function Discover() {
             <div className="absolute w-[500px] h-[500px] border border-white/[0.07] rounded-full" />
             <div className="absolute w-[300px] h-[300px] border border-white/[0.07] rounded-full" />
             <div className="text-center z-10 max-w-md p-6">
-              <MapPin size={32} strokeWidth={1.5} className="text-[#C9A84C] mx-auto mb-3" />
+              <MapPin size={32} strokeWidth={1.5} className="text-[#80465E] mx-auto mb-3" />
               <h3 className="text-lg font-display font-medium text-[#F0EDE6]">Geo Discovery</h3>
               <p className="text-xs text-[#7A7870] mt-2">Real-time locations of premium members near you.</p>
             </div>
@@ -257,7 +257,7 @@ export default function Discover() {
                 className="absolute pointer-events-auto cursor-pointer"
                 style={{ top: `${30 + idx * 15}%`, left: `${25 + idx * 18}%` }}>
                 <Link href={`/profile/${host.id}`} className="group relative flex flex-col items-center">
-                  <div className="w-[52px] h-[52px] rounded-full border-2 border-[#C9A84C] overflow-hidden group-hover:scale-110 transition-all">
+                  <div className="w-[52px] h-[52px] rounded-full border-2 border-[#80465E] overflow-hidden group-hover:scale-110 transition-all">
                     <img src={host.avatarUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                   <div className="absolute -bottom-6 bg-[#1A1A22] border border-white/[0.07] px-2 py-0.5 rounded-[12px] text-[9px] text-[#F0EDE6] font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -277,8 +277,8 @@ export default function Discover() {
             className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-[rgba(14,14,18,0.95)] backdrop-blur-lg">
             <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
               transition={{ duration: 0.36, ease: [0.25, 0.1, 0.25, 1] }}
-              className="relative w-full max-w-md p-8 bg-[#1A1A22] rounded-[24px] border border-[rgba(201,168,76,0.2)] text-center flex flex-col items-center">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] text-[#C9A84C] border border-[rgba(201,168,76,0.3)] font-medium mb-6">
+              className="relative w-full max-w-md p-8 bg-[#1A1A22] rounded-[24px] border border-[rgba(128,70,94,0.2)] text-center flex flex-col items-center">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#22222E] rounded-[100px] text-[10px] uppercase tracking-[0.12em] text-[#80465E] border border-[rgba(128,70,94,0.3)] font-medium mb-6">
                 <Sparkles size={12} strokeWidth={1.5} />Connection Made
               </div>
               <h2 className="text-3xl font-display font-medium text-[#F0EDE6] mb-6">You Connected</h2>
@@ -286,15 +286,15 @@ export default function Discover() {
                 <div className="w-[52px] h-[52px] rounded-full border-2 border-white/[0.2] overflow-hidden">
                   <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" alt="" className="w-full h-full object-cover" />
                 </div>
-                <div className="text-[#C9A84C] font-display text-xl">✦</div>
-                <div className="w-[52px] h-[52px] rounded-full border-2 border-[#C9A84C] overflow-hidden">
+                <div className="text-[#80465E] font-display text-xl">✦</div>
+                <div className="w-[52px] h-[52px] rounded-full border-2 border-[#80465E] overflow-hidden">
                   <img src={matchUser.avatarUrl} alt={matchUser.displayName} className="w-full h-full object-cover" />
                 </div>
               </div>
               <p className="text-sm text-[#7A7870] mb-8 max-w-sm leading-relaxed">You and {matchUser.displayName} are both verified. Connect and arrange your experience.</p>
               <div className="w-full flex flex-col gap-3">
                 <button onClick={() => { const cid = createConversation(matchUser.id); setMatchUser(null); window.location.href = `/chat?conv=${cid}`; }}
-                  className="w-full py-3.5 bg-[#C9A84C] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
+                  className="w-full py-3.5 bg-[#80465E] text-[#0E0E12] font-medium rounded-[100px] text-sm tracking-[0.04em] transition-all active:scale-[0.97]">
                   <MessageSquare size={16} strokeWidth={1.5} className="inline mr-2" />Send message
                 </button>
                 <button onClick={() => setMatchUser(null)}

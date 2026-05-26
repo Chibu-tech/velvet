@@ -55,6 +55,11 @@ interface VelvetState {
   safetyEvents: SafetyEvent[];
   ratings: Rating[];
   liveLocationSharing: LiveLocationState | null;
+  panicModalState: {
+    show: boolean;
+    countingDown: boolean;
+    countdownValue: number;
+  };
 
   verificationRequests: Array<{
     id: string;
@@ -130,11 +135,18 @@ interface VelvetState {
   stopLocationSharing: () => void;
 
   triggerPanicButton: () => Promise<void> | void;
+  cancelPanic: () => void;
+  setPanicModalState: (state: Partial<{
+    show: boolean;
+    countingDown: boolean;
+    countdownValue: number;
+  }>) => void;
 
   submitRating: (bookingId: string, toUserId: string, score: number, review?: string) => void;
   getPendingRatings: () => Booking[];
   getCompletenessScore: (userId?: string) => number;
   setRequireVerifiedClients: (val: boolean) => void;
+  setVerificationStatus?: (status: "unverified" | "pending" | "verified") => void;
 
   initFromSupabase: () => Promise<void>;
 }
@@ -165,6 +177,11 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
   safetyEvents: MOCK_SAFETY_EVENTS,
   ratings: MOCK_RATINGS,
   liveLocationSharing: null,
+  panicModalState: {
+    show: false,
+    countingDown: false,
+    countdownValue: 5,
+  },
 
   verificationRequests: [
     {
@@ -827,8 +844,14 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
         referenceId: activeBooking?.id || "none",
         isRead: false,
         createdAt: now
-      }, ...state.notifications]
+      },       ...state.notifications]
     }));
+  },
+  cancelPanic: () => {
+    set({ panicModalState: { show: false, countingDown: false, countdownValue: 5 } });
+  },
+  setPanicModalState: (partial) => {
+    set((state) => ({ panicModalState: { ...state.panicModalState, ...partial } }));
   },
 
   submitRating: async (bookingId, toUserId, score, review) => {
@@ -894,6 +917,11 @@ export const useVelvetStore = create<VelvetState>((set, get) => ({
     await profileService.updateProfile(user.id, { requireVerifiedClients: val } as any);
     set((state) => ({
       currentUser: state.currentUser ? { ...state.currentUser, requireVerifiedClients: val } : null
+    }));
+  },
+  setVerificationStatus: (status) => {
+    set((state) => ({
+      currentUser: state.currentUser ? { ...state.currentUser, verificationStatus: status } : null
     }));
   },
 

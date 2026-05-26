@@ -1,13 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useVelvetStore } from "@/store/useVelvetStore";
 import {
   Users, ShieldCheck, AlertTriangle, TrendingUp, Map,
-  Check, X, Ban, CheckCircle, Activity,
+  Check, X, Ban, CheckCircle, Activity, Bell, ShieldAlert,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const currentUser = useVelvetStore((state) => state.currentUser);
+
+  useEffect(() => {
+    if (currentUser?.role !== "admin") {
+      router.push("/discover");
+    }
+  }, [currentUser, router]);
   const companions = useVelvetStore((state) => state.companions);
   const bookings = useVelvetStore((state) => state.bookings);
   const verificationRequests = useVelvetStore((state) => state.verificationRequests);
@@ -23,7 +33,7 @@ export default function AdminDashboard() {
 
   const stats = [
     { label: "Active Members", value: activeUsers, icon: Users, color: "text-[#F0EDE6]" },
-    { label: "Verified", value: `${verifiedCount}/${companions.length}`, icon: ShieldCheck, color: "text-[#C9A84C]" },
+    { label: "Verified", value: `${verifiedCount}/${companions.length}`, icon: ShieldCheck, color: "text-[#80465E]" },
     { label: "Reports", value: reportQueue.length, icon: AlertTriangle, color: "text-rose-400" },
     { label: "Revenue (15%)", value: `$${totalRevenue}`, icon: TrendingUp, color: "text-emerald-400" },
   ];
@@ -58,10 +68,10 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-6 flex flex-col gap-4">
             <h2 className="text-lg font-display font-medium text-[#F0EDE6] flex items-center gap-2">
-              Verification Queue{verificationRequests.length > 0 && <span className="w-2 h-2 rounded-full bg-[#C9A84C]" />}
+              Verification Queue{verificationRequests.length > 0 && <span className="w-2 h-2 rounded-full bg-[#80465E]" />}
             </h2>
             {verificationRequests.length === 0 ? (
-              <GlassCard className="p-8 text-center"><CheckCircle size={32} strokeWidth={1.5} className="text-[#C9A84C] mx-auto mb-2" /><p className="text-xs text-[#7A7870]">Queue is clear.</p></GlassCard>
+              <GlassCard className="p-8 text-center"><CheckCircle size={32} strokeWidth={1.5} className="text-[#80465E] mx-auto mb-2" /><p className="text-xs text-[#7A7870]">Queue is clear.</p></GlassCard>
             ) : (
               <div className="flex flex-col gap-4">
                 {verificationRequests.map((req) => (
@@ -85,7 +95,7 @@ export default function AdminDashboard() {
                           <X size={14} strokeWidth={1.5} />
                         </button>
                         <button onClick={() => approveVerification(req.id)}
-                          className="px-6 py-2 bg-[#C9A84C] text-[#0E0E12] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all active:scale-[0.97]">
+                          className="px-6 py-2 bg-[#80465E] text-[#0E0E12] rounded-[100px] text-[10px] uppercase tracking-[0.12em] font-medium transition-all active:scale-[0.97]">
                           <Check size={12} strokeWidth={1.5} className="inline mr-1" />Approve
                         </button>
                       </div>
@@ -99,7 +109,7 @@ export default function AdminDashboard() {
           <div className="lg:col-span-6 flex flex-col gap-4">
             <h2 className="text-lg font-display font-medium text-[#F0EDE6]">Reports & Safety</h2>
             {reportQueue.length === 0 ? (
-              <GlassCard className="p-8 text-center"><CheckCircle size={32} strokeWidth={1.5} className="text-[#C9A84C] mx-auto mb-2" /><p className="text-xs text-[#7A7870]">No active reports.</p></GlassCard>
+              <GlassCard className="p-8 text-center"><CheckCircle size={32} strokeWidth={1.5} className="text-[#80465E] mx-auto mb-2" /><p className="text-xs text-[#7A7870]">No active reports.</p></GlassCard>
             ) : (
               <div className="flex flex-col gap-4">
                 {reportQueue.map((rep) => (
@@ -131,12 +141,12 @@ export default function AdminDashboard() {
 
         <div className="w-full">
           <h2 className="text-lg font-display font-medium text-[#F0EDE6] mb-4 flex items-center gap-2">
-            <Activity size={16} strokeWidth={1.5} className="text-[#C9A84C]" />Activity Overview
+            <Activity size={16} strokeWidth={1.5} className="text-[#80465E]" />Activity Overview
           </h2>
           <div className="w-full h-80 rounded-[18px] overflow-hidden border border-white/[0.07] relative bg-[#0E0E12] flex items-center justify-center">
             <div className="absolute w-[400px] h-[400px] border border-white/[0.07] rounded-full" />
             <div className="absolute w-[200px] h-[200px] border border-white/[0.07] rounded-full" />
-            <div className="absolute w-24 h-24 bg-[#C9A84C]/10 rounded-full blur-[40px] top-[30%] left-[40%]" />
+            <div className="absolute w-24 h-24 bg-[#80465E]/10 rounded-full blur-[40px] top-[30%] left-[40%]" />
             <div className="absolute w-32 h-32 bg-white/5 rounded-full blur-[50px] bottom-[25%] right-[35%]" />
             <div className="text-center z-10 max-w-sm p-6">
               <h3 className="text-sm font-display font-medium text-[#F0EDE6] uppercase tracking-[0.12em]">Analytics</h3>

@@ -19,6 +19,8 @@ export default function Chat() {
   const messages = useVelvetStore((state) => state.messages);
   const companions = useVelvetStore((state) => state.companions);
   const sendMessage = useVelvetStore((state) => state.sendMessage);
+  const blockUser = useVelvetStore((state) => state.blockUser);
+  const reportUser = useVelvetStore((state) => state.reportUser);
 
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
   const [inputText, setInputText] = useState("");
@@ -91,7 +93,7 @@ export default function Chat() {
             const active = conv.id === selectedConvId;
             return (
               <GlassCard key={conv.id} onClick={() => setSelectedConvId(conv.id)}
-                className={`p-3.5 border ${active ? "border-[#C9A84C] bg-[#22222E]" : "border-transparent bg-transparent"}`}>
+                className={`p-3.5 border ${active ? "border-[#80465E] bg-[#22222E]" : "border-transparent bg-transparent"}`}>
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <div className="w-[52px] h-[52px] rounded-full overflow-hidden border border-white/[0.07]">
@@ -102,13 +104,13 @@ export default function Chat() {
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-baseline mb-0.5">
                       <h4 className="text-xs font-medium text-[#F0EDE6] flex items-center gap-1">
-                        {companion.displayName}{companion.isVerified && <CheckCircle size={12} strokeWidth={1.5} className="text-[#C9A84C]" />}
+                        {companion.displayName}{companion.isVerified && <CheckCircle size={12} strokeWidth={1.5} className="text-[#80465E]" />}
                       </h4>
                       <span className="text-[9px] text-[#7A7870]">{new Date(conv.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                     <p className="text-[11px] text-[#7A7870] truncate leading-relaxed">{conv.lastMessage}</p>
                   </div>
-                  {conv.unreadCount > 0 && <span className="w-4 h-4 rounded-full bg-[#C9A84C] text-[9px] font-medium text-[#0E0E12] flex items-center justify-center">{conv.unreadCount}</span>}
+                  {conv.unreadCount > 0 && <span className="w-4 h-4 rounded-full bg-[#80465E] text-[9px] font-medium text-[#0E0E12] flex items-center justify-center">{conv.unreadCount}</span>}
                 </div>
               </GlassCard>
             );
@@ -129,7 +131,7 @@ export default function Chat() {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-[#F0EDE6] flex items-center gap-1">
-                    {activeCompanion.displayName}{activeCompanion.isVerified && <CheckCircle size={13} strokeWidth={1.5} className="text-[#C9A84C]" />}
+                    {activeCompanion.displayName}{activeCompanion.isVerified && <CheckCircle size={13} strokeWidth={1.5} className="text-[#80465E]" />}
                   </h3>
                   <span className="text-[10px] text-[#7A7870]">{activeCompanion.onlineStatus ? "Online" : "Away"} • {activeCompanion.lastActive}</span>
                 </div>
@@ -145,7 +147,7 @@ export default function Chat() {
                       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
                       className="absolute right-0 mt-2 w-40 bg-[#1A1A22] border border-white/[0.07] rounded-[18px] p-1 shadow-lg z-50 text-xs">
                       <Link href={`/profile/${activeCompanion.id}`} className="block px-3 py-2 text-[#7A7870] hover:text-[#F0EDE6] hover:bg-white/[0.04] rounded-[12px]">View Profile</Link>
-                      <button onClick={() => { alert("Report submitted."); setShowOptions(false); }}
+                      <button onClick={() => { blockUser(activeCompanion.id); reportUser(activeCompanion.id, "Inappropriate behavior"); setShowOptions(false); }}
                         className="w-full text-left px-3 py-2 text-rose-400 hover:bg-rose-500/10 rounded-[12px]">Block & Report</button>
                     </motion.div>
                   )}
@@ -159,11 +161,11 @@ export default function Chat() {
                 return (
                   <div key={msg.id} className={`flex flex-col max-w-[70%] ${isMe ? "self-end items-end" : "self-start items-start"}`}>
                     <div className={`px-4 py-2.5 rounded-[18px] text-xs leading-relaxed ${
-                      isMe ? "bg-[#C9A84C] text-[#0E0E12]" : "bg-[#22222E] border border-white/[0.07] text-[#F0EDE6]"
+                      isMe ? "bg-[#80465E] text-[#0E0E12]" : "bg-[#22222E] border border-white/[0.07] text-[#F0EDE6]"
                     }`}>{msg.content}</div>
                     <div className="flex items-center gap-1 mt-1 text-[9px] text-[#7A7870] font-medium">
                       <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      {isMe && <Check size={10} strokeWidth={1.5} className="text-[#C9A84C]" />}
+                      {isMe && <Check size={10} strokeWidth={1.5} className="text-[#80465E]" />}
                     </div>
                   </div>
                 );
@@ -171,9 +173,9 @@ export default function Chat() {
               {isTyping && (
                 <div className="self-start flex flex-col items-start gap-1.5">
                   <div className="bg-[#22222E] border border-white/[0.07] px-4 py-3 rounded-[18px] rounded-bl-none flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-[#C9A84C] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 bg-[#C9A84C] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 bg-[#C9A84C] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <span className="w-1.5 h-1.5 bg-[#80465E] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 bg-[#80465E] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 bg-[#80465E] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                   </div>
                   <span className="text-[9px] text-[#7A7870] uppercase tracking-[0.12em] font-medium">{activeCompanion.displayName} is typing...</span>
                 </div>
@@ -207,10 +209,10 @@ export default function Chat() {
                 <div className="relative flex-1">
                   <input type="text" placeholder={`Message ${activeCompanion.displayName}...`} value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    className="w-full pl-4 pr-10 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-xs placeholder-[#5A5858] focus:border-[#C9A84C] focus:outline-none transition-all" />
+                    className="w-full pl-4 pr-10 py-3 bg-[#22222E] rounded-[12px] border border-white/[0.1] text-[#F0EDE6] text-xs placeholder-[#5A5858] focus:border-[#80465E] focus:outline-none transition-all" />
                 </div>
                 <button type="submit"
-                  className="min-w-[48px] min-h-[48px] bg-[#C9A84C] text-[#0E0E12] rounded-full transition-all flex items-center justify-center active:scale-[0.97]">
+                  className="min-w-[48px] min-h-[48px] bg-[#80465E] text-[#0E0E12] rounded-full transition-all flex items-center justify-center active:scale-[0.97]">
                   <Send size={16} strokeWidth={1.5} />
                 </button>
               </form>
