@@ -27,7 +27,7 @@ export async function redeemReferralCode(code: string, newUserId: string): Promi
   const { data: ref } = await getSupabase().from("referral_codes").select("id, user_id, reward_count").eq("code", code).maybeSingle();
   if (!ref) return false;
   await getSupabase().from("referral_codes").update({ reward_count: (ref.reward_count || 0) + 1 }).eq("id", ref.id);
-  await addCredits(data.user_id, 10);
+  await addCredits(ref.user_id, 10);
   await addCredits(newUserId, 5);
   return true;
 }
